@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Life City – Departments Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-emoji">🏙️</div>
+        <div class="brand-name">Dashboard</div>
+      </div>
+
+      <div class="panel panel--ghost">
+        <div class="panel-title">Finance & Tracking</div>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1zOiW_1e00csF1FHKZX6h_DaVxrLKe3unuHLZwWRUJNw/edit?gid=401075469#gid=401075469">📊 Tracker</a>
+        <a target="_blank" rel="noopener" href="https://jaicsdx.github.io/checkboxmenu/">📊 Quick Tracker Entry</a>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1eWBZQZsQap3BABUNPdKvvd6HzAnC3RZvrd1N6jPQGsY/edit?gid=211823180#gid=211823180">💰 Payments Forecast</a>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1Aj38AwzHZIHP0zVye9Z0HE9BXxiMa1DSO8OoUWCX8Kg/edit?gid=17854660#gid=17854660">🏦 Fixed Deposit</a>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1knQ5kQx8u_GlhtjgFVDHjNIOYA6bKM6K3v61eG1Sy3I/edit?gid=0#gid=0">🏠 Mortgage</a>
+        <a target="_blank" rel="noopener" href="https://calendar.google.com/calendar/u/0/r">📅 Calendar</a>
+        <a target="_blank" rel="noopener" href="https://jaicsdx.github.io/incomepersecond/">📐 Income per second</a>
+      </div>
+
+      <div class="panel panel--ghost">
+        <div class="panel-title">Navigation</div>
+        <a href="index.html">🏠 Home</a>
+        <a href="#settings">⚙️ Settings</a>
+        <a href="#support">🆘 Support</a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <!-- Header -->
+      <header class="header" id="top">
+        <div class="container header-bar">
+          <!-- Left cluster -->
+          <div class="header-left">
+            <div class="searchbar">
+              <span class="search-emoji">🔎</span>
+              <input class="input search" id="globalSearch" placeholder="Search Life City…"/>
+            </div>
+
+            <!-- Note input (adds directly to ticker) -->
+            <div class="note-input">
+              <textarea id="newNote" rows="1" class="input" placeholder="Write a highlight…"></textarea>
+              <button id="addNoteBtn" class="btn btn-sky" title="Add note to ticker">➕</button>
+              <button id="clearAll" class="btn btn-muted" title="Clear all ticker notes">🗑</button>
+            </div>
+          </div>
+
+          <!-- Right cluster -->
+          <div class="header-right">
+            <button class="btn btn-amber">New</button>
+            <button class="btn btn-sky">Upload</button>
+            <button class="btn btn-emerald">Share</button>
+          </div>
+        </div>
+
+        <!-- Ticker -->
+        <div class="ticker" role="region" aria-label="Highlights">
+          <div class="ticker__mask"></div>
+          <div class="ticker__viewport" id="ticker-track" aria-live="polite"></div>
+        </div>
+      </header>
+
+      <!-- Controls -->
+      <main class="container content">
+        <div class="panel">
+          <div class="controls">
+            <div class="control">
+              <label>Search departments</label>
+              <input id="search" class="input" placeholder="Type to filter…"/>
+            </div>
+            <div class="control">
+              <label>View</label>
+              <select id="sort" class="input">
+                <option value="default">By number</option>
+                <option value="alpha">Alphabetical</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <!-- Deliveries Tracker -->
+<section class="panel" id="deliveries">
+  <h3 style="margin-bottom:10px; text-align:center;">📦 Deliveries Tracker</h3>
+
+  <div class="controls" style="margin-bottom:10px">
+    <div>
+      <label>Order / Item Name</label>
+      <input id="d_name" class="input" placeholder="e.g., Anker Power Bank"/>
+    </div>
+    <div>
+      <label>Client / Store</label>
+      <input id="d_store" class="input" placeholder="Amazon, Etsy, Client X"/>
+    </div>
+  </div>
+
+  <div class="controls" style="margin-bottom:10px">
+    <div>
+      <label>Tracking Number</label>
+      <input id="d_trackingNo" class="input" placeholder="e.g., 1Z999..."/>
+    </div>
+    <div>
+      <label>Tracking Link (paste full URL)</label>
+      <input id="d_trackingUrl" class="input" placeholder="https://..."/>
+    </div>
+  </div>
+
+  <div class="controls" style="margin-bottom:10px">
+    <div>
+      <label>Expected Date</label>
+      <input id="d_eta" type="date" class="input"/>
+    </div>
+    <div>
+      <label>Status</label>
+      <select id="d_status" class="input">
+        <option>Ordered</option>
+        <option>Shipped</option>
+        <option>Out for delivery</option>
+        <option>Delivered</option>
+        <option>Returned</option>
+        <option>Issue</option>
+      </select>
+    </div>
+  </div>
+
+  <div style="margin-bottom:10px">
+    <label>Notes</label>
+    <textarea id="d_notes" rows="3" class="input" placeholder="Color/size, price, who to notify, etc."></textarea>
+  </div>
+
+  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px">
+    <button class="btn btn-sky" id="d_save">Add / Update</button>
+    <button class="btn btn-muted" id="d_clear">Clear form</button>
+    <button class="btn btn-amber" id="d_export">Download JSON</button>
+    <input type="file" id="d_importFile" accept=".json" style="display:none"/>
+    <button class="btn" id="d_import" style="background:#0ea5e9;color:#051225">Import JSON</button>
+    <button class="btn" id="d_share" style="background:#34d399;color:#051225">Copy Share Link</button>
+  </div>
+
+  <div class="panel" style="margin-bottom:12px">
+    <label>Quick add from URL</label>
+    <input id="d_quickUrl" class="input" placeholder="Paste a tracking page URL (UPS/FedEx/DHL/Canada Post/Purolator/USPS)"/>
+    <div style="margin-top:8px">
+      <button class="btn btn-muted" id="d_parse">Parse → Carrier & Number</button>
+    </div>
+  </div>
+
+  <table class="table" style="width:100%" id="d_table">
+    <thead>
+      <tr>
+        <th>Item / Store</th>
+        <th>Tracking</th>
+        <th>ETA</th>
+        <th>Status</th>
+        <th>Notes</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="d_tbody">
+      <tr class="empty"><td colspan="6" class="empty">No deliveries yet.</td></tr>
+    </tbody>
+  </table>
+</section>
+        
+
+
+        
+      </main>
+
+      <footer class="container footer">Single-file app layout • © Life City</footer>
+    </div>
+  </div>
+  <script src="deliveries.js"></script>
+
+
+  <script src="script.js"></script>
+</body>
+</html>

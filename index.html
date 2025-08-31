@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Life City – Departments Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div href="index.html">🏙️</div>
+        <div class="brand-name">Dashboard</div>
+      </div>
+
+      <div class="panel panel--ghost">
+        <div class="panel-title">Finance & Tracking</div>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1zOiW_1e00csF1FHKZX6h_DaVxrLKe3unuHLZwWRUJNw/edit?gid=401075469#gid=401075469">📊 Tracker</a>
+        <a target="_blank" rel="noopener" href="https://jaicsdx.github.io/checkboxmenu/">📊 Quick Tracker Entry</a>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1eWBZQZsQap3BABUNPdKvvd6HzAnC3RZvrd1N6jPQGsY/edit?gid=211823180#gid=211823180">💰 Payments Forecast</a>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1Aj38AwzHZIHP0zVye9Z0HE9BXxiMa1DSO8OoUWCX8Kg/edit?gid=17854660#gid=17854660">🏦 Fixed Deposit</a>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1knQ5kQx8u_GlhtjgFVDHjNIOYA6bKM6K3v61eG1Sy3I/edit?gid=0#gid=0">🏠 Mortgage</a>
+        <a target="_blank" rel="noopener" href="https://calendar.google.com/calendar/u/0/r">📅 Calendar</a>
+        <a target="_blank" rel="noopener" href="https://jaicsdx.github.io/incomepersecond/">📐 Income per second</a>
+        <a target="_blank" rel="noopener" href="https://jaicsdx.github.io/dashboarddepartment/tradingplatforms">💰 TRADING PLATFORMS</a>
+        <a target="_blank" rel="noopener" href="https://jaicsdx.github.io/dashboarddepartment/tracker1.html#deliveries">✈️✈️ DELIVERY TRACKER</a>
+        
+
+        <a> -----MEDIA----</a>
+        <a target="_blank" rel="noopener" href="https://jaicsdx.github.io/localmedia-player/">📺 Personal Media Player</a>
+      </div>
+
+      <div class="panel panel--ghost">
+        <div class="panel-title">Navigation</div>
+        <a href="#top">🏠 Home</a>
+        <a href="#settings">⚙️ Settings</a>
+        <a href="#support">🆘 Support</a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <!-- Header -->
+      <header class="header" id="top">
+        <div class="container header-bar">
+          <!-- Left cluster -->
+          <div class="header-left">
+            <div class="searchbar">
+              <span class="search-emoji">🔎</span>
+              <input class="input search" id="globalSearch" placeholder="Search Life City…"/>
+            </div>
+
+            <!-- Note input (adds directly to ticker) -->
+            <div class="note-input">
+              <textarea id="newNote" rows="1" class="input" placeholder="Write a highlight…"></textarea>
+              <button id="addNoteBtn" class="btn btn-sky" title="Add note to ticker">➕</button>
+              <button id="clearAll" class="btn btn-muted" title="Clear all ticker notes">🗑</button>
+            </div>
+          </div>
+
+          <!-- Right cluster -->
+          <div class="header-right">
+            <button class="btn btn-amber">New</button>
+            <button class="btn btn-sky">Upload</button>
+            <button class="btn btn-emerald">Share</button>
+          </div>
+        </div>
+
+        <!-- Ticker -->
+        <div class="ticker" role="region" aria-label="Highlights">
+          <div class="ticker__mask"></div>
+          <div class="ticker__viewport" id="ticker-track" aria-live="polite"></div>
+        </div>
+      </header>
+
+      <!-- Controls -->
+      <main class="container content">
+        <div class="panel">
+          <div class="controls">
+            <div class="control">
+              <label>Search departments</label>
+              <input id="search" class="input" placeholder="Type to filter…"/>
+            </div>
+            <div class="control">
+              <label>View</label>
+              <select id="sort" class="input">
+                <option value="default">By number</option>
+                <option value="alpha">Alphabetical</option>
+              </select>
+            </div>
+          </div>
+        </div>
+       <!-- Slideshow -->
+<section class="panel" id="slideshow">
+  <h3 style="margin-bottom:10px; text-align:center;">🖼️ Slideshow</h3>
+
+  <div style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
+    <input id="ssAddUrl" class="input" placeholder="Paste image URL (PNG/JPG/WebP), then Add"/>
+    <button id="ssAddBtn" class="btn btn-sky">Add</button>
+    <button id="ssClearBtn" class="btn btn-muted">Clear All</button>
+  </div>
+
+  <div id="ssWrap" style="
+       position:relative; aspect-ratio:16/9; overflow:hidden;
+       border-radius:14px; background:#0e162c; border:1px solid #1f2937;">
+    <button type="button" id="ssPrev" title="Previous" style="
+        position:absolute; left:10px; top:50%; transform:translateY(-50%);
+        width:38px;height:38px;border-radius:99px;border:1px solid #334155;
+        background:rgba(0,0,0,.35); color:#fff; font-weight:800; cursor:pointer; z-index:2;">‹</button>
+    <button type="button" id="ssNext" title="Next" style="
+        position:absolute; right:10px; top:50%; transform:translateY(-50%);
+        width:38px;height:38px;border-radius:99px;border:1px solid #334155;
+        background:rgba(0,0,0,.35); color:#fff; font-weight:800; cursor:pointer; z-index:2;">›</button>
+    <div id="ssDots" style="
+        position:absolute; left:0; right:0; bottom:8px; display:flex; gap:6px;
+        justify-content:center; z-index:2;"></div>
+  </div>
+
+  <div class="small" style="margin-top:8px;color:#9ca3af">
+    Tip: for best speed, add images to your repo (e.g., <code>assets/slide1.jpg</code>) and paste those URLs here.
+  </div>
+</section>
+
+      </main>
+      <!-- Cards grid -->
+        <section id="grid" class="grid"></section>
+
+      <footer class="container footer">Single-file app layout • © Life City</footer>
+    </div>
+  </div>
+  <!-- Slideshow logic: put this BEFORE the existing <script src="script.js"></script> -->
+<script>
+document.addEventListener('DOMContentLoaded', async function(){
+  const KEY = 'lifeCity.slideshow.v1';
+  const JSON_PATH = 'slideshow.json'; // same folder as index.html
+
+  const wrap = document.getElementById('ssWrap');
+  if (!wrap) return;
+
+  // Add two small buttons to your existing toolbar
+  const toolbar = document.getElementById('ssWrap').previousElementSibling?.previousElementSibling || document.querySelector('#slideshow .panel-tools');
+  (function injectButtons(){
+    const bar = document.querySelector('#slideshow > div:first-of-type');
+    if(!bar) return;
+    const dl = document.createElement('button');
+    dl.className = 'btn btn-amber'; dl.textContent = 'Download JSON'; dl.id='ssExport';
+    const imp = document.createElement('button');
+    imp.className = 'btn btn-muted'; imp.textContent = 'Import JSON'; imp.id='ssImportBtn';
+    const file = document.createElement('input');
+    file.type='file'; file.accept='.json'; file.style.display='none'; file.id='ssImportFile';
+    bar.appendChild(dl); bar.appendChild(imp); bar.appendChild(file);
+  })();
+
+  const dots = document.getElementById('ssDots');
+  const addUrl = document.getElementById('ssAddUrl');
+  const addBtn = document.getElementById('ssAddBtn');
+  const clearBtn = document.getElementById('ssClearBtn');
+  const prevBtn = document.getElementById('ssPrev');
+  const nextBtn = document.getElementById('ssNext');
+  const exportBtn = document.getElementById('ssExport');
+  const importBtn = document.getElementById('ssImportBtn');
+  const importFile = document.getElementById('ssImportFile');
+
+  function loadLS(){ try{ return JSON.parse(localStorage.getItem(KEY)||'[]'); }catch{ return []; } }
+  function saveLS(arr){ localStorage.setItem(KEY, JSON.stringify(arr)); }
+
+  async function loadJSON(){
+    try{
+      const res = await fetch(JSON_PATH, {cache:'no-store'});
+      if (!res.ok) throw new Error('no json');
+      const data = await res.json();
+      if (Array.isArray(data)) return data;
+    }catch{}
+    return null;
+  }
+
+  // 1) Try JSON file; 2) fallback to localStorage; 3) fallback to demo
+  let slides = (await loadJSON()) || loadLS();
+  if (!Array.isArray(slides) || slides.length===0){
+    slides = [
+      {"src":"https://placehold.co/1600x900/png?text=Life+City+Slide+1","alt":"Slide 1"},
+      {"src":"https://placehold.co/1600x900/png?text=Life+City+Slide+2","alt":"Slide 2"},
+      {"src":"https://placehold.co/1600x900/png?text=Life+City+Slide+3","alt":"Slide 3"}
+    ];
+    saveLS(slides);
+  }
+
+  let i = 0, timer;
+
+  function render(){
+    wrap.querySelectorAll('img').forEach(n => n.remove());
+    slides.forEach((s, idx) => {
+      const img = document.createElement('img');
+      img.src = typeof s === 'string' ? s : s.src;
+      img.alt = (typeof s==='object' && s.alt) ? s.alt : ('Slide '+(idx+1));
+      img.decoding = 'async'; img.loading='lazy';
+      img.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s";
+      if (idx === i) img.onload = () => img.style.opacity = 1;
+      wrap.appendChild(img);
+    });
+    dots.innerHTML = '';
+    slides.forEach((_, idx)=>{
+      const d = document.createElement('button');
+      d.title = 'Go to ' + (idx+1);
+      d.style.cssText = "width:8px;height:8px;border-radius:999px;border:1px solid #94a3b8;background:"+(idx===i?"#94a3b8":"transparent");
+      d.addEventListener('click', ()=>{ i = idx; show(i,true); });
+      dots.appendChild(d);
+    });
+  }
+
+  function show(n, pause){
+    i = (n + slides.length) % slides.length;
+    wrap.querySelectorAll('img').forEach((img, idx)=>{ img.style.opacity = (idx === i) ? 1 : 0; });
+    Array.from(dots.children).forEach((d, idx)=>{ d.style.background = (idx===i) ? "#94a3b8" : "transparent"; });
+    if (pause) restartAuto(true);
+  }
+  const next=()=>show(i+1);
+  const prev=()=>show(i-1);
+  function restartAuto(pauseOnly){ clearInterval(timer); if (!pauseOnly) timer = setInterval(next, 4000); }
+
+  // add / clear
+  addBtn.addEventListener('click', ()=>{
+    const url = (addUrl.value||'').trim(); if (!url) return;
+    slides.push({src:url, alt:''}); saveLS(slides); addUrl.value=''; render(); show(slides.length-1,true);
+  });
+  clearBtn.addEventListener('click', ()=>{
+    if (confirm('Clear all slides?')){ slides=[]; saveLS(slides); render(); }
+  });
+
+  // export / import
+  exportBtn.addEventListener('click', ()=>{
+    const blob = new Blob([JSON.stringify(slides, null, 2)], {type:'application/json'});
+    const url = URL.createObjectURL(blob); const a=document.createElement('a');
+    a.href=url; a.download='slideshow.json'; a.click(); URL.revokeObjectURL(url);
+  });
+  importBtn.addEventListener('click', ()=>importFile.click());
+  importFile.addEventListener('change', async ()=>{
+    const f=importFile.files[0]; if(!f) return;
+    try{
+      const data = JSON.parse(await f.text());
+      if(!Array.isArray(data)) throw new Error('Invalid JSON (expect array)');
+      slides = data; saveLS(slides); render(); show(0,true);
+    }catch(e){ alert('Import failed: '+e.message); }
+    importFile.value='';
+  });
+
+  // UX
+  nextBtn.addEventListener('click', next);
+  prevBtn.addEventListener('click', prev);
+  wrap.addEventListener('mouseenter', ()=>restartAuto(true));
+  wrap.addEventListener('mouseleave', ()=>restartAuto(false));
+  let touchX=null;
+  wrap.addEventListener('touchstart', e=>{ touchX = e.touches[0].clientX; }, {passive:true});
+  wrap.addEventListener('touchend', e=>{
+    if (touchX==null) return;
+    const dx = e.changedTouches[0].clientX - touchX;
+    if (Math.abs(dx) > 40) (dx<0?next:prev)();
+    touchX=null;
+  }, {passive:true});
+
+  render(); restartAuto(false);
+});
+</script>
+
+
+  <script src="script.js"></script>
+
+
+</body>
+</html>

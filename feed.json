@@ -1,0 +1,10 @@
+{
+  "updatedAt": "2025-08-23 12:00:00",
+  "items": [
+    { "text": "dental checkup on sep 14",         "dept": "health",                  "emoji": "🌿", "url": "" },
+    { "text": "car maintenance immediately",        "dept": "21. Automobile & Transportation",   "emoji": "🚲", "url": "" },
+    { "text": "New Exercise Routine PDF",                "dept": "06. Health, Fitness & Emergency",   "emoji": "💪", "url": "" },
+    { "text": "aquarium cleaning on Saturdays",        "dept": "21. environment ",   "emoji": "🐠", "url": "" },
+     { "text": "DRIVING TEST ON SEP 6",        "dept": "21. AUTO -TRANSPORT ",   "emoji": "🚙🚙", "url": "" }
+  ]
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "name": "university certificate",
+    "store": "dtdc",
+    "trackingNo": "35580193305",
+    "trackingUrl": "https://www.dtdc.in/trace.asp",
+    "eta": "2025-09-10",
+    "status": "Shipped",
+    "notes": "LAST TRANSIT DELHI*****",
+    "createdAt": 1756647429566
+  },
+
+
+  {
+    "name": "nil",
+    "store": "amazon",
+    "trackingNo": "35580193305",
+    "trackingUrl": "www.amazon.ca",
+    "eta": "2025-09-10",
+    "status": "Shipped",
+    "notes": "2 days",
+    "createdAt": 1756647429566
+  }
+]
