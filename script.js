@@ -29,7 +29,7 @@ const DEPARTMENTS = [
   { num: "25.", name: "Housing & Urban Development",       url: "https://1drv.ms/f/c/a0e5d4fe7220c501/EsqJC4IoPSBDipGf1-XTCwEBQNACPzKcYYnJC8CwXaL3ww?e=jKaHvq", icon: "https://api.iconify.design/tabler/building.svg?color=white", color: "#22c55e" },
   { num: "26.", name: "Communications",                    url: "https://onedrive.live.com/?id=A0E5D4FE7220C501%21s5b8f60feb29940248fd4ed74dfb39f93&cid=a0e5d4fe7220c501&ithint=folder&migratedtospo=true", icon: "https://api.iconify.design/tabler/messages.svg?color=white", color: "#f97316" },
   { num: "27.", name: "Utilities",                         url: "https://1drv.ms/f/c/a0e5d4fe7220c501/EgSt-q_XwQdDtkQtojctRqYB3cqlca5DcT6EbyNg3ZrbWg?e=jdK6Wa", icon: "https://api.iconify.design/tabler/plug.svg?color=white", color: "#0891b2" },
-  { num: "28.", name: "Public Works",                      url: "https://1drv.ms/f/c/a0e5d4fe7220c501/Ehw5-wSQ0ntBnlBic-3yCS0B6IJkX3MAxFBT4fD-9D6OXQ?e=caLC7n", icon: "https://api.iconify.design/tabler/tools.svg?color=white", color: "#475569" },
+  { num: "28.", name: "Public Works",                      url: "https://jacques1990.github.io/publicworks.html", icon: "https://api.iconify.design/tabler/tools.svg?color=white", color: "#475569" },
   { num: "29.", name: "Environmental & Sustainability",    url: "https://1drv.ms/f/c/a0e5d4fe7220c501/EjNKI1nMXIFFrezPFGAD5hEBfb_GREXd5LK9odSWAGg9yQ?e=zLqRy3", icon: "https://api.iconify.design/tabler/leaf.svg?color=white", color: "#84cc16" }
 ];
 
