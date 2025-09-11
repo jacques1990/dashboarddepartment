@@ -91,6 +91,36 @@
       <main class="container content" style="padding:16px">
         <nav class="breadcrumb" style="color:var(--muted)">Home / <strong>Subpage Template</strong></nav>
         <h1 style="margin:6px 0 14px">FINANCE</h1>
+<!-- Slideshow -->
+<section class="panel" id="slideshow">
+  <h3 style="margin-bottom:10px; text-align:center;">🖼️ Slideshow</h3>
+
+  <div style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
+    <input id="ssAddUrl" class="input" placeholder="Paste image URL (PNG/JPG/WebP), then Add"/>
+    <button id="ssAddBtn" class="btn btn-sky">Add</button>
+    <button id="ssClearBtn" class="btn btn-muted">Clear All</button>
+  </div>
+
+  <div id="ssWrap" style="
+       position:relative; aspect-ratio:16/9; overflow:hidden;
+       border-radius:14px; background:#0e162c; border:1px solid #1f2937;">
+    <button type="button" id="ssPrev" title="Previous" style="
+        position:absolute; left:10px; top:50%; transform:translateY(-50%);
+        width:38px;height:38px;border-radius:99px;border:1px solid #334155;
+        background:rgba(0,0,0,.35); color:#fff; font-weight:800; cursor:pointer; z-index:2;">‹</button>
+    <button type="button" id="ssNext" title="Next" style="
+        position:absolute; right:10px; top:50%; transform:translateY(-50%);
+        width:38px;height:38px;border-radius:99px;border:1px solid #334155;
+        background:rgba(0,0,0,.35); color:#fff; font-weight:800; cursor:pointer; z-index:2;">›</button>
+    <div id="ssDots" style="
+        position:absolute; left:0; right:0; bottom:8px; display:flex; gap:6px;
+        justify-content:center; z-index:2;"></div>
+  </div>
+
+  <div class="small" style="margin-top:8px;color:#9ca3af">
+    Tip: for best speed, add images to your repo (e.g., <code>assets/slide1.jpg</code>) and paste those URLs here.
+  </div>
+</section>
 
         <section class="grid" id="subpage-grid"></section>
         <template id="card-template">
