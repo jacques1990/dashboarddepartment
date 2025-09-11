@@ -1,7 +1,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', async function(){
   const KEY = 'lifeCity.slideshow.v1';
-  const JSON_PATH = 'procurement.json'; // same folder as index.html
+  const JSON_PATH = '.procurement/procurement.json'; // same folder as index.html
 
   const wrap = document.getElementById('ssWrap');
   if (!wrap) return;
