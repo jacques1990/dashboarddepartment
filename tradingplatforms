@@ -136,7 +136,8 @@
       { name:"Questrade", url:"https://www.questrade.com/", image:"./assets/questrade.png", tag:"Broker" },
       { name:"Zebpay", url:"https://www.zebpay.com/", image:"./assets/zebpay.png", tag:"Crypto" },
       { name:"Zerodha", url:"https://kite.zerodha.com/", image:"./assets/zerodah.png", tag:"FX" },
-      { name:"ONEDRIVE", url:"https://1drv.ms/f/c/a0e5d4fe7220c501/EtUoQswyBFVKpJZZOdhFhbgBTxeAVCpPR-qlECUP49uCBQ?e=iRwa8x", tag:"FX" }
+      { name:"ONEDRIVE", url:"https://1drv.ms/f/c/a0e5d4fe7220c501/EtUoQswyBFVKpJZZOdhFhbgBTxeAVCpPR-qlECUP49uCBQ?e=iRwa8x", tag:"FX" },
+ { name:"OANDA", url:"https://trade.oanda.com/", image:"./assets/oanda.png", tag:"Broker" }
     ];
     (function(){
       const grid = document.getElementById('subpage-grid');
