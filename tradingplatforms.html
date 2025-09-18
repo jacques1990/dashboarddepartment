@@ -42,85 +42,56 @@
       .backdrop.show{opacity:1;pointer-events:auto}
     }
 
-    /* Grid cards */
+/* Grid cards */
     .grid{display:grid;gap:30px;grid-template-columns:1fr}
-    @media(min-width:720px){.grid{grid-template-columns:1fr 1fr 1fr 1fr}}
-    @media(min-width:1020px){.grid{grid-template-columns:1fr 1fr 1fr 1fr 1fr}}
-    .card-like{display:block;padding:20px;border:3px solid var(--panel-brd);border-radius:16px;background:var(--panel);color:#fff;text-decoration:none}
+@media(min-width:720px){.grid{grid-template-columns:1fr1fr1fr1fr}}
+@media(min-width:1020px){.grid{grid-template-columns:1fr1fr1fr1fr1fr}}
+    .card-like{display:block;padding:20px;border:3pxsolidvar(--panel-brd);border-radius:16px;background:var(--panel);color:#fff;text-decoration:none}
     .thumb{width:100%;aspect-ratio:1/1;border-radius:12px;background-size:cover;background-position:center}
     .title{font-weight:700;margin-top:8px}
     .tag{font-size:12px;color:var(--muted)}
-  </style>
+</style>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="brand-emoji">🏙️</div>
-        <div class="brand-name">Dashboard</div>
-      </div>
+<divclass="layout">
+<asideclass="sidebar"id="sidebar">
+<divclass="brand">
+<divclass="brand-emoji">🏙️</div>
+<divclass="brand-name">Dashboard</div>
+</div>
 
-      <div class="panel panel--ghost">
-        <div class="panel-title">Finance & Tracking</div>
-        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1zOiW_1e00csF1FHKZX6h_DaVxrLKe3unuHLZwWRUJNw/edit?gid=401075469#gid=401075469">📊 Tracker</a>
-        <a target="_blank" rel="noopener" href="https://jacques1990.github.io/checkboxmenu/">📊 Quick Tracker Entry</a>
-        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1eWBZQZsQap3BABUNPdKvvd6HzAnC3RZvrd1N6jPQGsY/edit?gid=211823180#gid=211823180">💰 Payments Forecast</a>
-        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1Aj38AwzHZIHP0zVye9Z0HE9BXxiMa1DSO8OoUWCX8Kg/edit?gid=17854660#gid=17854660">🏦 Fixed Deposit</a>
-        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1knQ5kQx8u_GlhtjgFVDHjNIOYA6bKM6K3v61eG1Sy3I/edit?gid=0#gid=0">🏠 Mortgage</a>
-        <a target="_blank" rel="noopener" href="https://calendar.google.com/calendar/u/0/r">📅 Calendar</a>
-        <a target="_blank" rel="noopener" href="https://jacques1990.github.io/incomepersecond/">📐 Income per second</a>
-        <a target="_blank" rel="noopener" href="https://jacques1990.github.io/localmedia-player/">📺 Personal Media Player</a>
-        <a> FINANCE </a>
-        <a target="_blank" rel="noopener" href="https://jacques1990.github.io/dashboarddepartment/tradingplatforms">💰 TRADING PLATFORMS</a>
-      </div>
+<divclass="panel panel--ghost">
+<divclass="panel-title">Finance & Tracking</div>
+<atarget="_blank"rel="noopener"href="https://docs.google.com/spreadsheets/d/1zOiW_1e00csF1FHKZX6h_DaVxrLKe3unuHLZwWRUJNw/edit?gid=401075469#gid=401075469">📊 Tracker</a>
+<atarget="_blank"rel="noopener"href="https://jacques1990.github.io/checkboxmenu/">📊 Quick Tracker Entry</a>
+<atarget="_blank"rel="noopener"href="https://docs.google.com/spreadsheets/d/1eWBZQZsQap3BABUNPdKvvd6HzAnC3RZvrd1N6jPQGsY/edit?gid=211823180#gid=211823180">💰 Payments Forecast</a>
+<atarget="_blank"rel="noopener"href="https://docs.google.com/spreadsheets/d/1Aj38AwzHZIHP0zVye9Z0HE9BXxiMa1DSO8OoUWCX8Kg/edit?gid=17854660#gid=17854660">🏦 Fixed Deposit</a>
+<atarget="_blank"rel="noopener"href="https://docs.google.com/spreadsheets/d/1knQ5kQx8u_GlhtjgFVDHjNIOYA6bKM6K3v61eG1Sy3I/edit?gid=0#gid=0">🏠 Mortgage</a>
+<atarget="_blank"rel="noopener"href="https://calendar.google.com/calendar/u/0/r">📅 Calendar</a>
+<atarget="_blank"rel="noopener"href="https://jacques1990.github.io/incomepersecond/">📐 Income per second</a>
+<atarget="_blank"rel="noopener"href="https://jacques1990.github.io/localmedia-player/">📺 Personal Media Player</a>
+<a> FINANCE </a>
+<atarget="_blank"rel="noopener"href="https://jacques1990.github.io/dashboarddepartment/tradingplatforms">💰 TRADING PLATFORMS</a>
+</div>
 
-      <div class="panel panel--ghost">
-        <div class="panel-title">Navigation</div>
-        <a href="index.html">🏠 Home</a>
-        <a href="#settings">⚙️ Settings</a>
-        <a href="#support">🆘 Support</a>
-      </div>
-    </aside>
+<divclass="panel panel--ghost">
+<divclass="panel-title">Navigation</div>
+<ahref="index.html">🏠 Home</a>
+<ahref="#settings">⚙️ Settings</a>
+<ahref="#support">🆘 Support</a>
+</div>
+</aside>
 
-    <div class="main">
-      <header class="header">
-        <button class="hamburger" id="hamburger" aria-label="Toggle sidebar" aria-controls="sidebar" aria-expanded="false"><span></span><span></span><span></span></button>
-        <input class="search" id="globalSearch" placeholder="Search Life City…"/>
-      </header>
+<divclass="main">
+<headerclass="header">
+<buttonclass="hamburger"id="hamburger"aria-label="Toggle sidebar"aria-controls="sidebar"aria-expanded="false"><span></span><span></span><span></span></button>
+<inputclass="search"id="globalSearch"placeholder="Search Life City…"/>
+</header>
 
-      <main class="container content" style="padding:16px">
-        <nav class="breadcrumb" style="color:var(--muted)">Home / <strong>Subpage Template</strong></nav>
-        <h1 style="margin:6px 0 14px">FINANCE</h1>
-<!-- Slideshow -->
-<section class="panel" id="slideshow">
-  <h3 style="margin-bottom:10px; text-align:center;">🖼️ Slideshow</h3>
+<mainclass="container content"style="padding:16px">
+<navclass="breadcrumb"style="color:var(--muted)">Home / <strong>Subpage Template</strong></nav>
+<h1style="margin:6px014px">FINANCE</h1>
 
-  <div style="display:flex; gap:8px; margin-bottom:10px; align-items:center;">
-    <input id="ssAddUrl" class="input" placeholder="Paste image URL (PNG/JPG/WebP), then Add"/>
-    <button id="ssAddBtn" class="btn btn-sky">Add</button>
-    <button id="ssClearBtn" class="btn btn-muted">Clear All</button>
-  </div>
-
-  <div id="ssWrap" style="
-       position:relative; aspect-ratio:16/9; overflow:hidden;
-       border-radius:14px; background:#0e162c; border:1px solid #1f2937;">
-    <button type="button" id="ssPrev" title="Previous" style="
-        position:absolute; left:10px; top:50%; transform:translateY(-50%);
-        width:38px;height:38px;border-radius:99px;border:1px solid #334155;
-        background:rgba(0,0,0,.35); color:#fff; font-weight:800; cursor:pointer; z-index:2;">‹</button>
-    <button type="button" id="ssNext" title="Next" style="
-        position:absolute; right:10px; top:50%; transform:translateY(-50%);
-        width:38px;height:38px;border-radius:99px;border:1px solid #334155;
-        background:rgba(0,0,0,.35); color:#fff; font-weight:800; cursor:pointer; z-index:2;">›</button>
-    <div id="ssDots" style="
-        position:absolute; left:0; right:0; bottom:8px; display:flex; gap:6px;
-        justify-content:center; z-index:2;"></div>
-  </div>
-
-  <div class="small" style="margin-top:8px;color:#9ca3af">
-    Tip: for best speed, add images to your repo (e.g., <code>assets/slide1.jpg</code>) and paste those URLs here.
-  </div>
-</section>
 
         <section class="grid" id="subpage-grid"></section>
         <template id="card-template">
