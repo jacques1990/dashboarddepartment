@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', async function(){
       img.src = typeof s === 'string' ? s : s.src;
       img.alt = (typeof s==='object' && s.alt) ? s.alt : ('Slide '+(idx+1));
       img.decoding = 'async'; img.loading='lazy';
-      img.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .45s";
+      img.style.cssText = "position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .45s";
       if (idx === i) img.onload = () => img.style.opacity = 1;
       wrap.appendChild(img);
     });
