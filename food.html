@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Life City – Subpage Template</title>
+  <style>
+    /* Base */
+    :root{--bg:#0b1220;--panel:#101827;--panel-brd:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--brand1:#a95a26;--brand2:#7d431e}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial;overflow-x:hidden}
+
+    /* Layout */
+    .layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .sidebar{background:linear-gradient(180deg,var(--brand1),var(--brand2));padding:14px;transition:transform .28s ease}
+    .main{background:#0c1326}
+
+    /* Sidebar links */
+    .brand{display:flex;align-items:center;gap:10px;padding:8px 10px}
+    .brand-emoji{font-size:26px}
+    .brand-name{font-weight:800;font-size:18px}
+    .panel{background:var(--panel);border:1px solid var(--panel-brd);border-radius:16px;padding:12px;margin:12px 0}
+    .panel--ghost{background:transparent;border-color:transparent}
+    .panel-title{opacity:.9;font-size:12px;margin:6px 6px 4px}
+    .sidebar a{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:10px;color:#fff;text-decoration:none}
+    .sidebar a:hover{background:rgba(255,255,255,.08)}
+
+    /* Header + hamburger */
+    .header{position:sticky;top:0;z-index:1000;background:var(--bg);border-bottom:1px solid rgba(255,255,255,.1);padding:10px;display:flex;align-items:center;gap:10px}
+    .search{flex:1;min-width:0;padding:8px 10px;border-radius:10px;border:1px solid var(--panel-brd);background:#0e162c;color:#fff}
+    .hamburger{display:none;flex-direction:column;gap:4px;padding:8px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:transparent;cursor:pointer}
+    .hamburger span{width:22px;height:2px;background:#fff;border-radius:2px}
+
+    /* Mobile drawer */
+    @media(max-width:980px){
+      .layout{grid-template-columns:1fr}
+      .sidebar{position:fixed;top:0;left:-260px;bottom:0;width:240px;z-index:999;transform:translateX(-100%);overflow-y:auto}
+      .sidebar.sidebar--open{transform:translateX(0);left:0}
+      .hamburger{display:flex}
+      body.sidebar-open{overflow:hidden}
+      .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:998;opacity:0;pointer-events:none;transition:opacity .2s ease}
+      .backdrop.show{opacity:1;pointer-events:auto}
+    }
+
+    /* Grid cards */
+    .grid{display:grid;gap:30px;grid-template-columns:1fr}
+    @media(min-width:720px){.grid{grid-template-columns:1fr 1fr 1fr 1fr}}
+    @media(min-width:1020px){.grid{grid-template-columns:1fr 1fr 1fr 1fr 1fr}}
+    .card-like{display:block;padding:20px;border:3px solid var(--panel-brd);border-radius:16px;background:var(--panel);color:#fff;text-decoration:none}
+    .thumb{width:100%;aspect-ratio:1/1;border-radius:12px;background-size:cover;background-position:center}
+    .title{font-weight:700;margin-top:8px}
+    .tag{font-size:12px;color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-emoji">🏙️</div>
+        <div class="brand-name">Dashboard</div>
+      </div>
+
+      <div class="panel panel--ghost">
+        <div class="panel-title">Finance & Tracking</div>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1zOiW_1e00csF1FHKZX6h_DaVxrLKe3unuHLZwWRUJNw/edit?gid=401075469#gid=401075469">📊 Tracker</a>
+        <a target="_blank" rel="noopener" href="https://jacques1990.github.io/checkboxmenu/">📊 Quick Tracker Entry</a>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1eWBZQZsQap3BABUNPdKvvd6HzAnC3RZvrd1N6jPQGsY/edit?gid=211823180#gid=211823180">💰 Payments Forecast</a>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1Aj38AwzHZIHP0zVye9Z0HE9BXxiMa1DSO8OoUWCX8Kg/edit?gid=17854660#gid=17854660">🏦 Fixed Deposit</a>
+        <a target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/1knQ5kQx8u_GlhtjgFVDHjNIOYA6bKM6K3v61eG1Sy3I/edit?gid=0#gid=0">🏠 Mortgage</a>
+        <a target="_blank" rel="noopener" href="https://calendar.google.com/calendar/u/0/r">📅 Calendar</a>
+        <a target="_blank" rel="noopener" href="https://jacques1990.github.io/incomepersecond/">📐 Income per second</a>
+        <a target="_blank" rel="noopener" href="https://jacques1990.github.io/localmedia-player/">📺 Personal Media Player</a>
+        <a> EMPLOYMENT RESOURCES </a>
+        <a target="_blank" rel="noopener" href="https://jacques1990.github.io/dashboarddepartment/tradingplatforms">💰 TRADING PLATFORMS</a>
+      </div>
+
+      <div class="panel panel--ghost">
+        <div class="panel-title">Navigation</div>
+        <a href="index.html">🏠 Home</a>
+        <a href="#settings">⚙️ Settings</a>
+        <a href="#support">🆘 Support</a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="header">
+        <button class="hamburger" id="hamburger" aria-label="Toggle sidebar" aria-controls="sidebar" aria-expanded="false"><span></span><span></span><span></span></button>
+        <input class="search" id="globalSearch" placeholder="Search Life City…"/>
+      </header>
+
+      <main class="container content" style="padding:16px">
+        <nav class="breadcrumb" style="color:var(--muted)">Home / <strong>Subpage Template</strong></nav>
+        <h1 style="margin:6px 0 14px">FINANCE</h1>
+
+        <section class="grid" id="subpage-grid"></section>
+        <template id="card-template">
+          <a class="card-like" target="_blank" rel="noopener">
+            <div class="thumb"></div>
+            <div class="title"></div>
+            <div class="tag"></div>
+          </a>
+        </template>
+        <div id="empty" hidden>No platforms configured</div>
+      </main>
+
+      <footer class="container footer" style="color:#94a3b8;text-align:center;padding:12px 16px">Subpage template • © Life City</footer>
+    </div>
+  </div>
+
+  <!-- mobile backdrop -->
+  <div class="backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+
+  <script>
+    // === Mobile sidebar toggle with backdrop ===
+    (function(){
+      const btn = document.getElementById('hamburger');
+      const sidebar = document.getElementById('sidebar');
+      const backdrop = document.getElementById('drawerBackdrop');
+      if(!btn || !sidebar || !backdrop) return;
+
+      function setOpen(open){
+        sidebar.classList.toggle('sidebar--open', open);
+        document.body.classList.toggle('sidebar-open', open);
+        backdrop.classList.toggle('show', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      }
+
+      btn.addEventListener('click', ()=> setOpen(!sidebar.classList.contains('sidebar--open')));
+      backdrop.addEventListener('click', ()=> setOpen(false));
+      window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') setOpen(false); });
+      setOpen(false); // start closed
+    })();
+
+    // === Optional: Platforms grid for this subpage ===
+    const PLATFORMS = [
+      { name:"TAHINI", url:"https://tahinis.com/", image:"./assets/tahini.png", tag:"Broker" },
+    { name:"COLLECTIONS ", url:"https://jacques1990.github.io/dashboarddepartment/collections.html", image:"./assets/sunlife.png", tag:"Broker" },
+       { name:"big bastard burrito", url:"https://order.online/store/fat-bastard-burrito-ottawa-982577/?hideModal=true&pickup=true", image:"./assets/bigbastardburrito.png", tag:"Broker" },
+       { name:"redswanpizza", url:"https://redswanpizza.ca/", image:"./assets/redswanpizza", tag:"Broker" },
+      { name:"malabarhouse", url:"https://www.google.com/search?q=malabar+house&rlz=1C5CHFA_enCA1018CA1019&oq=malabar+house&gs_lcrp=EgZjaHJvbWUyCQgAEEUYORiABDITCAEQLhivARjHARiRAhiABBiKBTIHCAIQABiABDIWCAMQLhivARjHARiABBiYBRiZBRieBTIHCAQQABiABDIHCAUQABiABDIHCAYQABiABDIHCAcQABiABDIHCAgQABiABDIHCAkQABiABNIBCDE4NjJqMGo3qAIAsAIA&sourceid=chrome&ie=UTF-8#", image:"./assets/malabarhouse", tag:"Broker" },
+      { name:"kachiguda", url:"https://order.tikme.co/kachigudajunctionottawa", image:"./assets/kachiguda.png", tag:"phone no (613) 831-055" },
+      { name:"KFC ", url:"https://www.kfc.ca/", image:"./assets/kfc.png", tag:"Broker" },
+      { name:"SHAAZ ", url:"https://mylightspeed.app/ZDDCKEDK/C-ordering/menu", image:"./assets/shaaz.png", tag:"phone no  (613) 963-4498" },
+       { name:"MADNARIN", url:"https://mandarinrestaurant.com/", image:"./assets/mandarin.png", tag:"phone no  (613) 963-4498" },
+      
+      //{ name:"calianbenefits", url:"https://id.desjardins.com/staticp/gia-externe-gpap-connect/migration/courriel", image:"./assets/calian.png", tag:"Crypto" },
+      //{ name:"wealthsimpleTax", url:"https://my.wealthsimple.com/tax/2024/?lang=en&activatedProfileId=39a23a98-56eb-4f8a-8194-4a77eee99462", image:"./assets/wealthsimple.png", tag:"FX" },
+      { name:"ONEDRIVE", url:"https://onedrive.live.com/?cid=a0e5d4fe7220c501&id=A0E5D4FE7220C501%21sd5a372d237274774866204c348fe0b17&resid=A0E5D4FE7220C501%21sd5a372d237274774866204c348fe0b17&ithint=folder&e=Q2v5aD&migratedtospo=true&redeem=aHR0cHM6Ly8xZHJ2Lm1zL2YvYy9hMGU1ZDRmZTcyMjBjNTAxL0V0SnlvOVVuTjNSSGhtSUV3MGotQ3hjQkpSRDNFT0Y4Z0lXdW5aVVV2RmdrQlE_ZT1RMnY1YUQ&v=validatepermission", image:"./assets/onedrive.png", tag:"FX" }
+    ];
+    (function(){
+      const grid = document.getElementById('subpage-grid');
+      const tpl = document.getElementById('card-template');
+      const empty = document.getElementById('empty');
+      if(!grid || !tpl) return;
+      grid.innerHTML='';
+      if(!PLATFORMS.length){ if(empty) empty.hidden=false; return; }
+      if(empty) empty.hidden=true;
+      PLATFORMS.forEach(p=>{
+        const node = tpl.content.firstElementChild.cloneNode(true);
+        node.href = p.url;
+        node.querySelector('.thumb').style.backgroundImage = `url(${p.image})`;
+        node.querySelector('.title').textContent = p.name;
+        node.querySelector('.tag').textContent = p.tag || new URL(p.url).hostname.replace('www.','');
+        grid.appendChild(node);
+      });
+    })();
+  </script>
+</body>
+</html>
