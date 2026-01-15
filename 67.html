@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Life City – Finance</title>
+
+  <style>
+    :root{
+      --bg:#0b1220;--panel:#101827;--panel-brd:#1f2937;
+      --text:#e5e7eb;--muted:#9ca3af;
+      --brand1:#a95a26;--brand2:#7d431e
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;background:var(--bg);color:var(--text);
+      font:14px/1.5 system-ui,Segoe UI,Roboto
+    }
+
+    .layout{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+    .sidebar{background:linear-gradient(180deg,var(--brand1),var(--brand2));padding:14px}
+    .main{background:#0c1326}
+
+    .brand{display:flex;gap:10px;align-items:center;padding:8px 10px}
+    .brand-emoji{font-size:26px}
+    .brand-name{font-weight:800;font-size:18px}
+
+    .panel-title{font-size:12px;opacity:.9;margin:10px}
+    .sidebar a{
+      display:block;color:#fff;text-decoration:none;
+      padding:10px 12px;border-radius:10px
+    }
+    .sidebar a:hover{background:rgba(255,255,255,.1)}
+
+    header{
+      position:sticky;top:0;background:var(--bg);
+      border-bottom:1px solid rgba(255,255,255,.1);
+      padding:12px
+    }
+
+    .grid{
+      display:grid;gap:24px;padding:20px;
+      grid-template-columns:repeat(auto-fill,minmax(180px,1fr))
+    }
+
+    .card{
+      background:var(--panel);border:2px solid var(--panel-brd);
+      border-radius:16px;padding:16px;
+      text-decoration:none;color:#fff;cursor:pointer
+    }
+
+    .thumb{
+      width:100%;aspect-ratio:1/1;border-radius:12px;
+      background-size:cover;background-position:center
+    }
+    .title{margin-top:8px;font-weight:700}
+    .tag{font-size:12px;color:var(--muted)}
+  </style>
+</head>
+
+<body>
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-emoji">🏙️</div>
+      <div class="brand-name">Dashboard</div>
+    </div>
+
+    <div class="panel-title">Navigation</div>
+    <a href="index.html">🏠 Home</a>
+    <a href="#">⚙️ Settings</a>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <header>
+      <h2>FINANCE</h2>
+    </header>
+
+    <section class="grid" id="grid"></section>
+  </div>
+
+</div>
+
+<script>
+/* ===============================
+   PASSWORD GATE (STATIC SITE)
+   =============================== */
+
+// 🔐 CHANGE THIS PASSWORD
+const RESTRICTED_PASSWORD = "CHANGE_ME_NOW";
+
+// session-based auth
+function isAuthed(id){
+  return sessionStorage.getItem("auth:"+id)==="1";
+}
+function setAuthed(id){
+  sessionStorage.setItem("auth:"+id,"1");
+}
+
+function gatedOpen(url, id){
+  if(isAuthed(id)){
+    window.open(url,"_blank","noopener");
+    return;
+  }
+  const pw = prompt("Password required:");
+  if(pw===null) return;
+  if(pw===RESTRICTED_PASSWORD){
+    setAuthed(id);
+    window.open(url,"_blank","noopener");
+  } else {
+    alert("Wrong password");
+  }
+}
+
+/* ===============================
+   PLATFORM DATA
+   =============================== */
+
+const PLATFORMS = [
+  {
+    name:"CALIAN INSURANCE",
+    url:"https://www.agea-gbim.dsf-dfs.com/",
+    image:"./assets/calian.png",
+    tag:"Public"
+  },
+  {
+    name:"POWERPAY PAYSTUB",
+    url:"https://clients.powerpay.ca/selfservice/home/",
+    image:"./assets/calian.png",
+    tag:"Public"
+  },
+  {
+    name:"PRIVATE ONEDRIVE",
+    url:"https://onedrive.live.com/",
+    image:"./assets/onedrive.png",
+    tag:"Restricted",
+    protected:true,
+    gateId:"onedrive"
+  }
+];
+
+/* ===============================
+   RENDER GRID
+   =============================== */
+
+const grid = document.getElementById("grid");
+
+PLATFORMS.forEach(p=>{
+  const card = document.createElement("a");
+  card.className="card";
+  card.href=p.url;
+
+  if(p.protected){
+    card.addEventListener("click",e=>{
+      e.preventDefault();
+      gatedOpen(p.url, p.gateId || p.name);
+    });
+  } else {
+    card.target="_blank";
+    card.rel="noopener";
+  }
+
+  const thumb = document.createElement("div");
+  thumb.className="thumb";
+  thumb.style.backgroundImage=`url(${p.image})`;
+
+  const title = document.createElement("div");
+  title.className="title";
+  title.textContent=p.name;
+
+  const tag = document.createElement("div");
+  tag.className="tag";
+  tag.textContent=p.tag;
+
+  card.append(thumb,title,tag);
+  grid.appendChild(card);
+});
+</script>
+
+</body>
+</html>
