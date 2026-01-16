@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Life City – Subpage Template</title>
+  <title>Life City – Collections</title>
   <style>
     /* Base */
     :root{--bg:#0b1220;--panel:#101827;--panel-brd:#1f2937;--text:#e5e7eb;--muted:#9ca3af;--brand1:#a95a26;--brand2:#7d431e}
@@ -131,31 +131,87 @@
       setOpen(false); // start closed
     })();
 
-    // === Optional: Platforms grid for this subpage ===
+    /* =========================================================
+       PASSWORD GATE (STATIC SITE = deterrent, not true security)
+       Only protects the DUNGEONS AND DRAGONS card.
+       ========================================================= */
+
+    // 🔐 CHANGE THIS PASSWORD:
+    const RESTRICTED_PASSWORD = "69";
+
+    // session auth (until tab closes)
+    function isAuthed(id){
+      return sessionStorage.getItem("auth:"+id) === "1";
+    }
+    function setAuthed(id){
+      sessionStorage.setItem("auth:"+id, "1");
+    }
+
+    function gateAndOpen(url, id){
+      if (isAuthed(id)) {
+        window.open(url, "_blank", "noopener");
+        return;
+      }
+      const entered = prompt("Password required:");
+      if (entered === null) return; // cancelled
+      if (entered === RESTRICTED_PASSWORD) {
+        setAuthed(id);
+        window.open(url, "_blank", "noopener");
+      } else {
+        alert("Wrong password");
+      }
+    }
+
+    // === Platforms grid for this subpage ===
     const PLATFORMS = [
-      //{ name:"uberbenefits", url:"https://www.uber.com/ca/en/drive/uber-pro/", image:"./assets/uber.png", tag:"Broker" },
-      // { name:"CRA", url:"https://cms-sgj.cra-arc.gc.ca/gol-ged/awsc/cms/login?TYPE=33554432&REALMOID=06-00ba5d0a-2e5a-105d-9505-84cb2b4afb5e&GUID=&SMAUTHREASON=0&METHOD=GET&SMAGENTNAME=-SM-VBsyLaEZXwIUFhq8C3N4UGC2G2ZbCouqrx0srbXXaEq8VpjzECfDP%2bxPlNszQNRnOgP9%2f9tstAUwBzGqfen3slizPVRJupARGTG6DDALLLI%2fRAJeGIJRPkE11nNiLGHr&TARGET=-SM-HTTP%3a%2f%2fcms--sgj%2ecra--arc%2egc%2eca%2fgol--ged%2fawsc%2fcms%2fpostlogin%3fSAMLRequest%3dfZBPS8QwEMXv-%2BylC7v2TxNYS2sLCIiwoiIoHLzId026lTWomVT-%2B-%2BbT2sXnaOj3kz7-%2FfK-%2FRxO9sF8zIYC-%2Bx4HSxWfvdUOqCdtYTSkA-%2BrH-%2Fd2tlnGqJ-%2B-%2BCQzdwdlgcvYXQO1vxUwgT6STBkSLq3mP0EIHHuMMYYVW-%2FKJnmZugxIRgHSeQ4u3EezRag4i0MZDg7Hir-%2BapQqhBB5AVK9Zfk1FC0WEtsMrmTTKJUirqt0D0T9pzmbiWZztBTAhorLVGaRkJFMn1KhVa6z4oWzZ-%2BNpS7zA8HrHliktCb15-%2FW8DehEut7A8Nn4l5-%2FXgut7GsHHDf-%2B4yOV-%2Bud2Xyt-%2Bv6Bw-%3D-%3D%26RelayState%3d3d8e7a378ceb62d63708af4bf4bd00b9561a4282%26SigAlg%3dhttp-%3A-%2F-%2Fwww%2ew3%2eorg-%2F2001-%2F04-%2Fxmldsig--more-%23rsa--sha256%26Signature%3dlbPTMNXKTSwG4URer3DZYIWydKxROPcZvMZnIQk0M5paVljkI-%2F9V0jk8QLYFKY9-%2BIR2MuGgi0qPeDjaXylXZpjmSxZO1uEyi8-%2B00a9mfCraQqO2C-%2F-%2FPUj4hfCREl-%2F5F6nxkCizraG6ghLMFJvfJmh1xott-%2BAbCm91wl22V3by8qkXgg4Qcdb-%2B2qgFuqswTn6r7W8cpL0WX-%2Btqdbj9AtNY9IY8TJJydDbOixBwIOTSmRzkVjh2iJGYgpeDBKb1AQ1S1lhcFxKkMpoa2z4-%2FdowvM9MO45vPoaOLUO3XbuAg3KxPptiOPPnXtZjgSDgMMF-%2BgpN8ROgj92xyjKN82E3zrQ-%3D-%3D%26SMPORTALURL%3d3s3oC2jIJ0qEQ12Yiq9kAEjDKEUuKufwTJYavzvDtmH65tOSqAjOcKBbNnWrHFISoEmNt55oyAIlNgDZ-%2FeXB9Z-%2Fegu2zyozy", image:"./assets/cra.png", tag:"Broker" },
-      
-      
       { name:"WATCHES", url:"https://jacques1990.github.io/dashboarddepartment/watches.html", image:"./assets/watches.png", tag:"Broker" },
+      { name:"World cup ", url:"https://jacques1990.github.io/dashboarddepartment/watches.html", image:"./assets/watches.png", tag:"Broker" },
+      { name:"stores and restuarant list", url:"https://jacques1990.github.io/dashboarddepartment/watches.html", image:"./assets/watches.png", tag:"Broker" },
+      { name:"FASHION", url:"https://jacques1990.github.io/dashboarddepartment/watches.html", image:"./assets/watches.png", tag:"Broker" },
+      { name:"WATCHES", url:"https://jacques1990.github.io/dashboarddepartment/watches.html", image:"./assets/watches.png", tag:"Broker" },
+
+      // 🔒 This one is gated:
+      { name:"DUNGEONS AND DRAGONS", url:"https://jacques1990.github.io/dashboarddepartment/dungeonsanddragons.html", image:"./assets/watches.png", tag:"Restricted", protected:true, gateId:"dnd" },
+
       { name:"SMARTPHONES", url:"https://docs.google.com/spreadsheets/d/1bl0yePO_X_IZ4CInnIkyXCNpqb7-ZD2rfr4xsk0Tt8M/edit?gid=0#gid=0", image:"./assets/SMARTPHONES.png", tag:"Crypto" },
-     // { name:"wealthsimpleTax", url:"https://my.wealthsimple.com/tax/2024/?lang=en&activatedProfileId=39a23a98-56eb-4f8a-8194-4a77eee99462", image:"./assets/wealthsimple.png", tag:"FX" },
       { name:"ONEDRIVE", url:"https://onedrive.live.com/?id=%2Fpersonal%2Fa0e5d4fe7220c501%2FDocuments%2FLife%20City%20Departments%2F14%2E%20Dreams%20%26%20Exploration&viewid=c3ce216b%2D44df%2D47d7%2D848d%2D8cb6844b1b73", image:"./assets/onedrive.png", tag:"FX" }
     ];
+
     (function(){
       const grid = document.getElementById('subpage-grid');
       const tpl = document.getElementById('card-template');
       const empty = document.getElementById('empty');
       if(!grid || !tpl) return;
+
       grid.innerHTML='';
       if(!PLATFORMS.length){ if(empty) empty.hidden=false; return; }
       if(empty) empty.hidden=true;
+
       PLATFORMS.forEach(p=>{
         const node = tpl.content.firstElementChild.cloneNode(true);
+
         node.href = p.url;
         node.querySelector('.thumb').style.backgroundImage = `url(${p.image})`;
         node.querySelector('.title').textContent = p.name;
-        node.querySelector('.tag').textContent = p.tag || new URL(p.url).hostname.replace('www.','');
+
+        // safer tag rendering (avoids URL() crashing if url is not absolute)
+        try{
+          node.querySelector('.tag').textContent = p.tag || new URL(p.url).hostname.replace('www.','');
+        }catch{
+          node.querySelector('.tag').textContent = p.tag || "Link";
+        }
+
+        // 🔒 Gate only the protected item
+        if (p.protected) {
+          node.addEventListener("click", (e)=>{
+            e.preventDefault();
+            gateAndOpen(p.url, p.gateId || p.name);
+          });
+        } else {
+          node.target = "_blank";
+          node.rel = "noopener";
+        }
+
         grid.appendChild(node);
       });
     })();
