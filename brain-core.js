@@ -8,12 +8,12 @@ let notes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let currentNoteId = null;
 let activeMonthFilter = null;
 
-// AUTO SAVE
+// ✅ AUTO SAVE
 let autoSaveTimer;
 let syncTimer;
 let lastSavedHash = "";
 
-// GOOGLE
+// ✅ YOUR GOOGLE API (ADDED)
 const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxmvEDh_DFx6_3yQ_jraM4qscmXrTZMGsdIwUebHM-3SB8k46MQxgFqBklOIEEJtSI_/exec";
 
 // ELEMENTS
@@ -27,7 +27,9 @@ const els = {
   content: document.getElementById("content"),
   todoList: document.getElementById("todoList"),
   tableBody: document.querySelector("#table tbody"),
-  statusText: document.getElementById("statusText")
+  statusText: document.getElementById("statusText"),
+  addTaskBtn: document.getElementById("addTaskBtn"),
+  addRowBtn: document.getElementById("addRowBtn")
 };
 
 // ================= STATUS =================
@@ -41,6 +43,11 @@ function persistLocal(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
 }
 
+// ================= HELPERS =================
+function monthNameFromDate(iso){
+  return new Date(iso).toLocaleString("default",{month:"long"});
+}
+
 // ================= FOLDERS =================
 function buildFolders(){
   els.folders.innerHTML = "";
@@ -48,7 +55,6 @@ function buildFolders(){
   Object.entries(DEFAULT_FOLDERS).forEach(([year, months])=>{
     const y = document.createElement("div");
     y.textContent = year;
-    y.className = "folder-item";
     y.onclick = ()=>{
       activeMonthFilter = null;
       renderNotesList();
@@ -58,7 +64,6 @@ function buildFolders(){
     months.forEach(month=>{
       const m = document.createElement("div");
       m.textContent = month;
-      m.className = "folder-item";
       m.onclick = ()=>{
         activeMonthFilter = month;
         renderNotesList();
@@ -70,19 +75,11 @@ function buildFolders(){
 
 // ================= CREATE =================
 function createNote(){
-
-  let now = new Date();
-
-  if(activeMonthFilter){
-    const monthIndex = new Date(Date.parse(activeMonthFilter + " 1, 2026")).getMonth();
-    now.setMonth(monthIndex);
-  }
-
   const note = {
     id: Date.now(),
     title: "New Note",
     content: "",
-    date: now.toISOString(),
+    date: new Date().toISOString(),
     department: "Controlled Documents",
     todos: [],
     table: []
@@ -109,7 +106,6 @@ function openNote(id){
 
   renderTodos(note.todos);
   renderTable(note.table);
-
   updateProgress();
 }
 
@@ -120,7 +116,7 @@ function appendTodoRow(text="",done=false){
 
   row.innerHTML=`
     <input type="checkbox" ${done?"checked":""}>
-    <input class="todo-input" value="${text}">
+    <input class="todo-input" value="${text || ""}">
   `;
 
   els.todoList.appendChild(row);
@@ -138,8 +134,8 @@ function renderTodos(todos){
 function appendTableRow(item="",value=""){
   const tr=document.createElement("tr");
   tr.innerHTML=`
-    <td><input value="${item}"></td>
-    <td><input value="${value}"></td>
+    <td><input value="${item || ""}"></td>
+    <td><input value="${value || ""}"></td>
   `;
   els.tableBody.appendChild(tr);
 }
@@ -164,23 +160,6 @@ function collectTable(){
   });
 }
 
-// ================= SAVE =================
-function saveNote(){
-  const note = notes.find(n=>n.id===currentNoteId);
-  if(!note) return;
-
-  note.title = els.title.value;
-  note.department = els.department.value;
-  note.content = els.content.value;
-  note.todos = collectTodos();
-  note.table = collectTable();
-
-  persistLocal();
-  renderNotesList();
-
-  syncToGoogle(note);
-}
-
 // ================= AUTO SAVE =================
 function autoSave(){
   const note = notes.find(n=>n.id===currentNoteId);
@@ -194,7 +173,6 @@ function autoSave(){
   });
 
   if(data === lastSavedHash) return;
-
   lastSavedHash = data;
 
   note.title = els.title.value;
@@ -207,7 +185,6 @@ function autoSave(){
   renderNotesList();
 
   setStatus("Auto-saving...");
-
   debounceGoogleSync(note);
 }
 
@@ -258,25 +235,22 @@ function updateProgress(){
 function renderNotesList(){
   els.notesList.innerHTML="";
 
-  let filteredNotes = notes;
+  let filtered = notes;
 
   if(activeMonthFilter){
-    filteredNotes = notes.filter(n=>{
-      const m = new Date(n.date)
-        .toLocaleString("default",{month:"long"});
-      return m === activeMonthFilter;
+    filtered = notes.filter(n=>{
+      return monthNameFromDate(n.date) === activeMonthFilter;
     });
   }
 
-  filteredNotes.forEach(n=>{
+  filtered.forEach(n=>{
     const div=document.createElement("div");
-    div.className="note-item";
     div.innerText=n.title;
     div.onclick=()=>openNote(n.id);
     els.notesList.appendChild(div);
   });
 
-  els.noteCount.innerText = filteredNotes.length;
+  els.noteCount.innerText = filtered.length;
 }
 
 // ================= EVENTS =================
@@ -298,6 +272,21 @@ els.todoList.addEventListener("change", e=>{
 });
 
 els.tableBody.addEventListener("input", triggerAutoSave);
+
+// ✅ BUTTON FIX (THIS WAS YOUR ISSUE)
+if(els.addTaskBtn){
+  els.addTaskBtn.addEventListener("click", ()=>{
+    appendTodoRow();
+    triggerAutoSave();
+  });
+}
+
+if(els.addRowBtn){
+  els.addRowBtn.addEventListener("click", ()=>{
+    appendTableRow();
+    triggerAutoSave();
+  });
+}
 
 // ================= INIT =================
 buildFolders();
