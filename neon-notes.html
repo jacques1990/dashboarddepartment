@@ -59,8 +59,12 @@
         </select>
       </div>
 
-      <textarea id="content" class="content-area" placeholder="Write your note here..."></textarea>
+     <div class="editor-toolbar-2">
+  <button onclick="insertTodo()">☑ To-Do</button>
+  <button onclick="insertTable()">📊 Table</button>
+</div>
 
+<div id="editor" class="editor-box" contenteditable="true"></div>
       <div class="split-grid">
         <section class="card">
           <div class="card-title-row">
