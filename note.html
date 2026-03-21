@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Life City Notebook</title>
+<style>
+body { font-family: Arial; background:#0b1220; color:white; margin:0; }
+.container { display:flex; height:100vh; }
+
+/* Sidebar */
+.sidebar {
+  width:250px; background:#101827; padding:10px;
+}
+.folder {
+  padding:10px; cursor:pointer; border-bottom:1px solid #333;
+}
+.folder:hover { background:#1f2937; }
+
+/* Main */
+.main { flex:1; padding:15px; }
+
+/* Note area */
+textarea {
+  width:100%; height:200px; background:#0e162c; color:white;
+  border:1px solid #333; padding:10px;
+}
+
+/* To-do */
+.todo-item { display:flex; gap:10px; margin:5px 0; }
+
+/* Table */
+table { width:100%; border-collapse:collapse; margin-top:10px; }
+td, th { border:1px solid #444; padding:8px; }
+
+button {
+  margin:5px; padding:8px 12px;
+  background:#38bdf8; border:none; cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="folders"></div>
+
+  <!-- Main -->
+  <div class="main">
+
+    <h2 id="folderTitle">Select Folder</h2>
+
+    <!-- Notes -->
+    <textarea id="noteArea" placeholder="Write notes..."></textarea>
+
+    <!-- To-do -->
+    <h3>To-Do</h3>
+    <div id="todoList"></div>
+    <button onclick="addTodo()">+ Add Task</button>
+
+    <!-- Table -->
+    <h3>Table</h3>
+    <table id="table">
+      <tr><th>Item</th><th>Value</th></tr>
+    </table>
+    <button onclick="addRow()">+ Add Row</button>
+
+    <br><br>
+    <button onclick="saveData()">💾 Save</button>
+
+  </div>
+
+</div>
+
+<script>
+
+const departments = [
+  "Finance", "Health", "Business", "Daily Logs",
+  "Projects", "Housing", "Transportation"
+];
+
+let currentFolder = "";
+
+// Load folders
+const folderDiv = document.getElementById("folders");
+departments.forEach(dep => {
+  const div = document.createElement("div");
+  div.className = "folder";
+  div.innerText = dep;
+  div.onclick = () => loadFolder(dep);
+  folderDiv.appendChild(div);
+});
+
+function loadFolder(name){
+  currentFolder = name;
+  document.getElementById("folderTitle").innerText = name;
+
+  const data = JSON.parse(localStorage.getItem(name)) || {};
+
+  document.getElementById("noteArea").value = data.notes || "";
+
+  // Load todos
+  const todoList = document.getElementById("todoList");
+  todoList.innerHTML = "";
+  (data.todos || []).forEach(t => {
+    addTodo(t.text, t.done);
+  });
+
+  // Load table
+  const table = document.getElementById("table");
+  table.innerHTML = "<tr><th>Item</th><th>Value</th></tr>";
+  (data.table || []).forEach(r => {
+    addRow(r.item, r.value);
+  });
+}
+
+// To-do
+function addTodo(text="", done=false){
+  const div = document.createElement("div");
+  div.className = "todo-item";
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = done;
+
+  const input = document.createElement("input");
+  input.value = text;
+
+  div.appendChild(checkbox);
+  div.appendChild(input);
+
+  document.getElementById("todoList").appendChild(div);
+}
+
+// Table
+function addRow(item="", value=""){
+  const table = document.getElementById("table");
+  const row = table.insertRow();
+
+  const c1 = row.insertCell(0);
+  const c2 = row.insertCell(1);
+
+  c1.innerHTML = `<input value="${item}">`;
+  c2.innerHTML = `<input value="${value}">`;
+}
+
+// Save
+function saveData(){
+  const notes = document.getElementById("noteArea").value;
+
+  const todos = [];
+  document.querySelectorAll(".todo-item").forEach(div => {
+    const inputs = div.querySelectorAll("input");
+    todos.push({
+      done: inputs[0].checked,
+      text: inputs[1].value
+    });
+  });
+
+  const table = [];
+  document.querySelectorAll("#table tr").forEach((row, i) => {
+    if(i===0) return;
+    const inputs = row.querySelectorAll("input");
+    table.push({
+      item: inputs[0].value,
+      value: inputs[1].value
+    });
+  });
+
+  localStorage.setItem(currentFolder, JSON.stringify({
+    notes, todos, table
+  }));
+
+  alert("Saved!");
+}
+
+</script>
+
+</body>
+</html>
