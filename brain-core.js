@@ -8,14 +8,15 @@ let notes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let currentNoteId = null;
 let activeMonthFilter = null;
 
-// 🔥 AUTO SAVE ENGINE
+// AUTO SAVE
 let autoSaveTimer;
 let syncTimer;
 let lastSavedHash = "";
 
-// 🔗 GOOGLE API
-const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwrFw8IyIgN6oTiL3zKLWGZi_wEc_d2UI7ujpePEnbvgDStWZvCozzyf3BnAKygjK4F/exec";
+// GOOGLE
+const SHEETS_WEB_APP_URL = "PASTE_YOUR_URL_HERE";
 
+// ELEMENTS
 const els = {
   folders: document.getElementById("folders"),
   notesList: document.getElementById("notesList"),
@@ -30,9 +31,9 @@ const els = {
 };
 
 // ================= STATUS =================
-function setStatus(message, isError = false){
-  els.statusText.textContent = message;
-  els.statusText.style.color = isError ? "#fca5a5" : "#94a3b8";
+function setStatus(msg, err=false){
+  els.statusText.textContent = msg;
+  els.statusText.style.color = err ? "#fca5a5" : "#94a3b8";
 }
 
 // ================= STORAGE =================
@@ -40,17 +41,14 @@ function persistLocal(){
   localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
 }
 
-// ================= HELPERS =================
-function monthNameFromDate(iso){
-  return new Date(iso).toLocaleString("default",{month:"long"});
-}
-
+// ================= FOLDERS =================
 function buildFolders(){
   els.folders.innerHTML = "";
+
   Object.entries(DEFAULT_FOLDERS).forEach(([year, months])=>{
     const y = document.createElement("div");
     y.textContent = year;
-    y.className = "folder-item folder-year";
+    y.className = "folder-item";
     y.onclick = ()=>{
       activeMonthFilter = null;
       renderNotesList();
@@ -60,7 +58,7 @@ function buildFolders(){
     months.forEach(month=>{
       const m = document.createElement("div");
       m.textContent = month;
-      m.className = "folder-item folder-month";
+      m.className = "folder-item";
       m.onclick = ()=>{
         activeMonthFilter = month;
         renderNotesList();
@@ -70,13 +68,21 @@ function buildFolders(){
   });
 }
 
-// ================= CREATE NOTE =================
+// ================= CREATE =================
 function createNote(){
+
+  let now = new Date();
+
+  if(activeMonthFilter){
+    const monthIndex = new Date(Date.parse(activeMonthFilter + " 1, 2026")).getMonth();
+    now.setMonth(monthIndex);
+  }
+
   const note = {
     id: Date.now(),
     title: "New Note",
     content: "",
-    date: new Date().toISOString(),
+    date: now.toISOString(),
     department: "Controlled Documents",
     todos: [],
     table: []
@@ -187,15 +193,15 @@ function autoSave(){
     table:collectTable()
   });
 
-  if(data===lastSavedHash) return;
+  if(data === lastSavedHash) return;
 
-  lastSavedHash=data;
+  lastSavedHash = data;
 
-  note.title=els.title.value;
-  note.department=els.department.value;
-  note.content=els.content.value;
-  note.todos=collectTodos();
-  note.table=collectTable();
+  note.title = els.title.value;
+  note.department = els.department.value;
+  note.content = els.content.value;
+  note.todos = collectTodos();
+  note.table = collectTable();
 
   persistLocal();
   renderNotesList();
@@ -208,20 +214,20 @@ function autoSave(){
 // ================= DEBOUNCE =================
 function debounceGoogleSync(note){
   clearTimeout(syncTimer);
-  syncTimer=setTimeout(()=>syncToGoogle(note),3000);
+  syncTimer = setTimeout(()=>{
+    syncToGoogle(note);
+  }, 3000);
 }
 
 // ================= GOOGLE =================
 async function syncToGoogle(note){
   try{
     setStatus("Syncing...");
-    const res=await fetch(SHEETS_WEB_APP_URL,{
+    await fetch(SHEETS_WEB_APP_URL,{
       method:"POST",
       headers:{"Content-Type":"text/plain;charset=utf-8"},
       body:JSON.stringify(note)
     });
-
-    await res.text();
     setStatus("Synced ✅");
   }catch{
     setStatus("Sync failed ❌",true);
@@ -230,7 +236,7 @@ async function syncToGoogle(note){
 
 // ================= STRIKE =================
 function applyStrikeThrough(cb){
-  const text=cb.nextElementSibling;
+  const text = cb.nextElementSibling;
   if(cb.checked){
     text.style.textDecoration="line-through";
     text.style.opacity="0.6";
@@ -242,33 +248,47 @@ function applyStrikeThrough(cb){
 
 // ================= PROGRESS =================
 function updateProgress(){
-  const todos=collectTodos();
-  const total=todos.length;
-  const done=todos.filter(t=>t.done).length;
+  const todos = collectTodos();
+  const total = todos.length;
+  const done = todos.filter(t=>t.done).length;
   setStatus(`Progress: ${done}/${total}`);
 }
 
 // ================= LIST =================
 function renderNotesList(){
   els.notesList.innerHTML="";
-  notes.forEach(n=>{
+
+  let filteredNotes = notes;
+
+  if(activeMonthFilter){
+    filteredNotes = notes.filter(n=>{
+      const m = new Date(n.date)
+        .toLocaleString("default",{month:"long"});
+      return m === activeMonthFilter;
+    });
+  }
+
+  filteredNotes.forEach(n=>{
     const div=document.createElement("div");
     div.className="note-item";
     div.innerText=n.title;
     div.onclick=()=>openNote(n.id);
     els.notesList.appendChild(div);
   });
+
+  els.noteCount.innerText = filteredNotes.length;
 }
 
 // ================= EVENTS =================
 function triggerAutoSave(){
   clearTimeout(autoSaveTimer);
-  autoSaveTimer=setTimeout(autoSave,1000);
+  autoSaveTimer = setTimeout(autoSave,1000);
 }
 
 els.content.addEventListener("input", triggerAutoSave);
 els.title.addEventListener("input", triggerAutoSave);
 els.todoList.addEventListener("input", triggerAutoSave);
+
 els.todoList.addEventListener("change", e=>{
   if(e.target.type==="checkbox"){
     applyStrikeThrough(e.target);
@@ -276,6 +296,7 @@ els.todoList.addEventListener("change", e=>{
     triggerAutoSave();
   }
 });
+
 els.tableBody.addEventListener("input", triggerAutoSave);
 
 // ================= INIT =================
