@@ -359,3 +359,25 @@ async function loadFromGoogle(){
     setStatus("Failed to load from Google ❌", true);
   }
 }
+function exportMemory(){
+
+  const data = JSON.stringify({ notes }, null, 2);
+
+  const blob = new Blob([data], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "life-city-memory.json";
+
+  // 🔥 THIS PART FIXES MOST BUGS
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+
+  URL.revokeObjectURL(url);
+
+  console.log("JSON Export Triggered");
+  setStatus("JSON exported ✅");
+}
+document.getElementById("exportBtn").addEventListener("click", exportMemory);
