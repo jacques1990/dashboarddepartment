@@ -8,25 +8,40 @@
 
 <body>
 
-<div class="app">
+<div class="layout">
 
-  <div class="top-bar">
-    <input id="title" placeholder="Note title">
-    <select id="department">
-      <option>Finance</option>
-      <option>Daily Logs & Planner</option>
-      <option>Business</option>
-      <option>Controlled Documents</option>
-    </select>
-    <button onclick="saveNote()">💾 Save</button>
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="folders"></div>
+
+  <!-- NOTES LIST -->
+  <div class="notes-panel">
+    <h3>Notes</h3>
+    <div id="notesList"></div>
+    <button onclick="createNote()">+ New Note</button>
   </div>
 
-  <div class="tool-bar">
-    <button onclick="insertTodo()">☑ To-Do</button>
-    <button onclick="insertTable()">📊 Table</button>
-  </div>
+  <!-- EDITOR -->
+  <div class="editor-area">
 
-  <div id="editor" contenteditable="true" class="editor"></div>
+    <div class="top-bar">
+      <input id="title" placeholder="Note title">
+      <select id="department">
+        <option>Finance</option>
+        <option>Daily Logs & Planner</option>
+        <option>Business</option>
+        <option>Controlled Documents</option>
+      </select>
+      <button onclick="saveNote()">💾 Save</button>
+    </div>
+
+    <div class="tool-bar">
+      <button onclick="insertTodo()">☑ To-Do</button>
+      <button onclick="insertTable()">📊 Table</button>
+    </div>
+
+    <div id="editor" contenteditable="true" class="editor"></div>
+
+  </div>
 
 </div>
 
