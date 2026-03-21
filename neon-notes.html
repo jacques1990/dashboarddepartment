@@ -1,52 +1,99 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Neon Notes</title>
-  <link rel="stylesheet" href="galaxy-style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Notes • Life City</title>
+  <link rel="stylesheet" href="galaxy-style.css" />
 </head>
-
 <body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">📓</div>
+        <div>
+          <div class="brand-title">Neon Notes</div>
+          <div class="brand-sub">Life City Notebook</div>
+        </div>
+      </div>
 
-<div class="layout">
+      <div class="section-label">Folders</div>
+      <div id="folders" class="folders"></div>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="folders"></div>
+      <div class="section-label">Memory</div>
+      <div class="memory-actions">
+        <button class="ghost-btn" onclick="exportMemory()">Export JSON</button>
+        <label class="upload-label">
+          Import JSON
+          <input type="file" accept=".json,application/json" onchange="importMemory(event)" hidden>
+        </label>
+      </div>
+    </aside>
 
-  <!-- NOTES LIST -->
-  <div class="notes-panel">
-    <h3>Notes</h3>
-    <button onclick="createNote()">+ New</button>
-    <div id="notesList"></div>
+    <section class="notes-panel">
+      <div class="panel-top">
+        <input id="searchBox" class="search-input" placeholder="Search notes..." />
+        <button class="primary-btn" onclick="createNote()">+ New</button>
+      </div>
+
+      <div class="list-header">
+        <span>Notes</span>
+        <span id="noteCount">0</span>
+      </div>
+
+      <div id="notesList" class="notes-list"></div>
+    </section>
+
+    <main class="editor-panel">
+      <div class="editor-toolbar">
+        <input id="title" class="title-input" placeholder="Note title" />
+        <select id="department" class="department-select">
+          <option value="Controlled Documents">Controlled Documents</option>
+          <option value="Daily Logs & Planner">Daily Logs & Planner</option>
+          <option value="Finance">Finance</option>
+          <option value="Major Projects">Major Projects</option>
+          <option value="Health, Fitness & Emergency">Health, Fitness & Emergency</option>
+          <option value="Business">Business</option>
+          <option value="Communications">Communications</option>
+          <option value="Archives & Museum">Archives & Museum</option>
+        </select>
+      </div>
+
+      <textarea id="content" class="content-area" placeholder="Write your note here..."></textarea>
+
+      <div class="split-grid">
+        <section class="card">
+          <div class="card-title-row">
+            <h3>To-do</h3>
+            <button class="mini-btn" onclick="addTodo()">+ Task</button>
+          </div>
+          <div id="todoList" class="todo-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-title-row">
+            <h3>Table</h3>
+            <button class="mini-btn" onclick="addRow()">+ Row</button>
+          </div>
+          <table id="table" class="notes-table">
+            <thead>
+              <tr><th>Item</th><th>Value</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </section>
+      </div>
+
+      <div class="status-row">
+        <div id="statusText" class="status-text">Ready</div>
+        <div class="action-row">
+          <button class="ghost-btn" onclick="deleteCurrentNote()">Delete</button>
+          <button class="primary-btn" onclick="saveNote()">Save & Sync</button>
+        </div>
+      </div>
+    </main>
   </div>
 
-  <!-- EDITOR -->
-  <div class="editor-area">
-
-    <div class="top-bar">
-      <input id="title" placeholder="Note title">
-      <select id="department">
-        <option>Finance</option>
-        <option>Daily Logs & Planner</option>
-        <option>Business</option>
-        <option>Controlled Documents</option>
-      </select>
-      <button onclick="saveNote()">💾 Save</button>
-    </div>
-
-    <div class="tool-bar">
-      <button onclick="insertTodo()">☑ To-Do</button>
-      <button onclick="insertTable()">📊 Table</button>
-    </div>
-
-    <!-- 🔥 ONLY EDITOR -->
-    <div id="editor" class="editor" contenteditable="true"></div>
-
-  </div>
-
-</div>
-
-<script src="brain-core.js"></script>
-
+  <script src="brain-core.js"></script>
 </body>
 </html>
