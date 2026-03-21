@@ -330,3 +330,36 @@ if(notes.length){
 }else{
   createNote();
 }
+function insertTodo(){
+  const editor = document.getElementById("editor");
+
+  const div = document.createElement("div");
+  div.className = "todo";
+
+  div.innerHTML = `
+    <input type="checkbox">
+    <span contenteditable="true">New Task</span>
+  `;
+
+  editor.appendChild(div);
+}
+
+function insertTable(){
+  const editor = document.getElementById("editor");
+
+  const table = document.createElement("table");
+  table.className = "notes-table-inline";
+
+  table.innerHTML = `
+    <tr>
+      <th contenteditable="true">Item</th>
+      <th contenteditable="true">Value</th>
+    </tr>
+    <tr>
+      <td contenteditable="true"></td>
+      <td contenteditable="true"></td>
+    </tr>
+  `;
+
+  editor.appendChild(table);
+}
