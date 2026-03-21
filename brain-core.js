@@ -1,13 +1,36 @@
-const STORAGE_KEY = "notesV3";
-
+const STORAGE_KEY = "lifeCityNotesV4";
 let notes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let currentNote = null;
 
-// 🔗 PUT YOUR GOOGLE SCRIPT URL HERE
 const API_URL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
 
 // =======================
-// CREATE NEW NOTE
+// FOLDER SYSTEM
+// =======================
+
+const folders = {
+  "2026": ["March", "February", "January"]
+};
+
+const folderDiv = document.getElementById("folders");
+
+for (let year in folders){
+  const y = document.createElement("div");
+  y.innerText = year;
+  y.className = "folder";
+  folderDiv.appendChild(y);
+
+  folders[year].forEach(month=>{
+    const m = document.createElement("div");
+    m.innerText = "  " + month;
+    m.className = "folder";
+    m.onclick = ()=>filterByMonth(month);
+    folderDiv.appendChild(m);
+  });
+}
+
+// =======================
+// CREATE NOTE
 // =======================
 
 function createNote(){
@@ -15,13 +38,15 @@ function createNote(){
     id: Date.now(),
     title: "New Note",
     content: "",
-    department: "General",
+    department: "Finance",
     date: new Date().toISOString()
   };
 
   notes.push(note);
   currentNote = note;
+
   saveLocal();
+  renderNotesList();
   loadNote(note);
 }
 
@@ -76,17 +101,12 @@ function saveNote(){
   }
 
   currentNote.title = document.getElementById("title").value;
-
   currentNote.department = document.getElementById("department").value;
-
-  // 🔥 IMPORTANT FIX
   currentNote.content = document.getElementById("editor").innerHTML;
 
   saveLocal();
-
+  renderNotesList();
   syncToGoogle(currentNote);
-
-  console.log("Saved:", currentNote);
 }
 
 // =======================
@@ -97,11 +117,44 @@ function loadNote(note){
   currentNote = note;
 
   document.getElementById("title").value = note.title;
-
   document.getElementById("department").value = note.department;
-
-  // 🔥 IMPORTANT FIX
   document.getElementById("editor").innerHTML = note.content || "";
+}
+
+// =======================
+// RENDER NOTES
+// =======================
+
+function renderNotesList(){
+  const list = document.getElementById("notesList");
+  list.innerHTML = "";
+
+  notes.forEach(n=>{
+    const div = document.createElement("div");
+    div.className = "note-item";
+    div.innerText = n.title;
+    div.onclick = ()=>loadNote(n);
+    list.appendChild(div);
+  });
+}
+
+// =======================
+// FILTER BY MONTH
+// =======================
+
+function filterByMonth(month){
+  const list = document.getElementById("notesList");
+  list.innerHTML = "";
+
+  notes.forEach(n=>{
+    if(new Date(n.date).toLocaleString('default',{month:'long'}) === month){
+      const div = document.createElement("div");
+      div.className = "note-item";
+      div.innerText = n.title;
+      div.onclick = ()=>loadNote(n);
+      list.appendChild(div);
+    }
+  });
 }
 
 // =======================
@@ -138,6 +191,8 @@ function syncToGoogle(note){
 // =======================
 // INIT
 // =======================
+
+renderNotesList();
 
 if(notes.length > 0){
   loadNote(notes[0]);
