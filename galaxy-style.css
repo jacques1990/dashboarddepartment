@@ -223,3 +223,59 @@ body{
   .sidebar,.notes-panel,.editor-panel{min-height:auto}
   .split-grid{grid-template-columns:1fr}
 }
+.editor-box {
+  min-height:300px;
+  border:1px solid #334155;
+  padding:12px;
+  border-radius:12px;
+  background:#020617;
+  color:white;
+}
+
+.editor-toolbar-2 {
+  margin-bottom:10px;
+  display:flex;
+  gap:10px;
+}
+
+.editor-toolbar-2 button {
+  background:#1e293b;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.todo {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin:6px 0;
+}
+
+.todo input {
+  width:18px;
+  height:18px;
+}
+
+.todo span {
+  outline:none;
+}
+
+.notes-table-inline {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+.notes-table-inline td,
+.notes-table-inline th {
+  border:1px solid #444;
+  padding:6px;
+  min-width:80px;
+}
+
+.notes-table-inline td {
+  background:#020617;
+}
