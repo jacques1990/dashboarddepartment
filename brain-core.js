@@ -7,7 +7,7 @@ let notes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let currentNoteId = null;
 let activeMonthFilter = null;
 
-const SHEETS_WEB_APP_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwrFw8IyIgN6oTiL3zKLWGZi_wEc_d2UI7ujpePEnbvgDStWZvCozzyf3BnAKygjK4F/exec";
 
 const els = {
   folders: document.getElementById("folders"),
