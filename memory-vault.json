@@ -1,0 +1,31 @@
+{
+  "notes": [
+    {
+      "id": 1001,
+      "title": "Finance Check-In",
+      "content": "Track weekly spending, trading notes, and fixed deposit reminders.",
+      "date": "2026-03-21T10:00:00.000Z",
+      "department": "Finance",
+      "todos": [
+        {
+          "done": false,
+          "text": "Review weekly budget"
+        },
+        {
+          "done": false,
+          "text": "Update trading journal"
+        }
+      ],
+      "table": [
+        {
+          "item": "Capital",
+          "value": "300"
+        },
+        {
+          "item": "Savings Goal",
+          "value": "5000 INR monthly"
+        }
+      ]
+    }
+  ]
+}
