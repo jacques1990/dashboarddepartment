@@ -325,6 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ================= INIT =================
+  loadFromGoogle();
   buildFolders();
   renderNotesList();
 
