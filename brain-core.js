@@ -107,7 +107,7 @@ function openNote(id){
   currentNoteId = id;
   els.title.value = note.title || "";
   els.department.value = note.department || "Controlled Documents";
-  els.content.value = note.content || "";
+ document.getElementById("editor").innerHTML = note.content || "";
 
   renderTodos(note.todos || []);
   renderTable(note.table || []);
@@ -175,7 +175,7 @@ function saveNote(){
 
   note.title = els.title.value.trim() || "Untitled Note";
   note.department = els.department.value;
-  note.content = els.content.value;
+  note.content = document.getElementById("editor").innerHTML;
   note.todos = collectTodos();
   note.table = collectTable();
   note.date = note.date || new Date().toISOString();
