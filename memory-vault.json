@@ -1,29 +1,167 @@
 {
   "notes": [
     {
-      "id": 1001,
-      "title": "Finance Check-In",
-      "content": "Track weekly spending, trading notes, and fixed deposit reminders.",
-      "date": "2026-03-21T10:00:00.000Z",
-      "department": "Finance",
+      "id": 1774118247433,
+      "title": "daily routine",
+      "content": "TODAY\ncleaning\ndishwashing\nlaundry\ngrocery\ncooking\ngarbage\n",
+      "date": "2026-03-21T18:37:27.433Z",
+      "department": "Controlled Documents",
       "todos": [
         {
           "done": false,
-          "text": "Review weekly budget"
+          "text": "CLEANING"
         },
         {
           "done": false,
-          "text": "Update trading journal"
+          "text": "DISHWASHING"
+        },
+        {
+          "done": false,
+          "text": "LAUNDRY"
+        },
+        {
+          "done": false,
+          "text": "GROCCERY"
+        },
+        {
+          "done": false,
+          "text": "COOKING"
+        },
+        {
+          "done": false,
+          "text": "GARBAE"
+        },
+        {
+          "done": false,
+          "text": "ok"
+        },
+        {
+          "done": false,
+          "text": ""
         }
       ],
       "table": [
         {
-          "item": "Capital",
-          "value": "300"
+          "item": "",
+          "value": ""
         },
         {
-          "item": "Savings Goal",
-          "value": "5000 INR monthly"
+          "item": "",
+          "value": ""
+        },
+        {
+          "item": "",
+          "value": ""
+        },
+        {
+          "item": "",
+          "value": ""
+        },
+        {
+          "item": "",
+          "value": ""
+        },
+        {
+          "item": "",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": 1774116728823,
+      "title": "asset management ",
+      "content": "skyline . new nets needed for bird protection \n",
+      "date": "2026-03-21T18:12:08.823Z",
+      "department": "Controlled Documents",
+      "todos": [
+        {
+          "done": false,
+          "text": ""
+        },
+        {
+          "done": false,
+          "text": ""
+        }
+      ],
+      "table": []
+    },
+    {
+      "id": 1774114159538,
+      "title": "New Note",
+      "content": "",
+      "date": "2026-04-21T17:29:19.538Z",
+      "department": "Controlled Documents",
+      "todos": [],
+      "table": []
+    },
+    {
+      "id": 1774112766276,
+      "title": "AUTO",
+      "content": "INSPECTION DATE \nUBER LICENSE\n\nauto maintenance call \nis updating working\nk",
+      "date": "2026-03-21T17:06:06.276Z",
+      "department": "Controlled Documents",
+      "todos": [
+        {
+          "done": true,
+          "text": "UBER LICENSE"
+        },
+        {
+          "done": false,
+          "text": "VEHICLE INSPECTION"
+        },
+        {
+          "done": false,
+          "text": "AUTO MAINTENANCE"
+        }
+      ],
+      "table": [
+        {
+          "item": "automaintenance",
+          "value": "in progress"
+        }
+      ]
+    },
+    {
+      "id": 1774112495994,
+      "title": "FINANCE",
+      "content": "TRADING LOGS UPDATE \nCREATE TWO ACCOUNTS\n\n\n-----\ntrading features study about 20 ema and 9 ema \nit will work fine \n\nk",
+      "date": "2026-03-21T17:01:35.994Z",
+      "department": "Finance",
+      "todos": [],
+      "table": []
+    },
+    {
+      "id": 1774106598178,
+      "title": "log notes IT",
+      "content": "this my first note \nWILL IT WORK IT SHOULD OK\n\nis it autosaving????\nyes auto saving and the log notes are working good or may good enough \n\nis there a lag in google sheet sync??\nupdated url again \n\njj\nALLELUJAH\n\nnot append just update",
+      "date": "2026-03-21T15:23:18.178Z",
+      "department": "Communications",
+      "todos": [
+        {
+          "done": true,
+          "text": "PAY BILSS"
+        },
+        {
+          "done": true,
+          "text": "APPOINTMENT FOR ULTRA SOUND"
+        },
+        {
+          "done": true,
+          "text": "TASK"
+        },
+        {
+          "done": true,
+          "text": "hi"
+        }
+      ],
+      "table": [
+        {
+          "item": "vehicle inspection",
+          "value": "STILL IN PROGRESS"
+        },
+        {
+          "item": "check the table working",
+          "value": "WORKING "
         }
       ]
     }
