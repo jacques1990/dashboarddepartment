@@ -1,60 +1,32 @@
-body {
-  margin:0;
-  font-family:Arial;
-  background:#0f172a;
-  color:white;
+.layout {
+  display:grid;
+  grid-template-columns: 220px 260px 1fr;
+  height:100vh;
 }
 
-.app {
-  padding:20px;
-}
-
-.top-bar {
-  display:flex;
-  gap:10px;
-  margin-bottom:10px;
-}
-
-input, select {
-  padding:8px;
-  border-radius:6px;
-  border:none;
-}
-
-button {
-  background:#2563eb;
-  color:white;
-  border:none;
-  padding:8px 12px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.tool-bar {
-  margin-bottom:10px;
-}
-
-.editor {
-  min-height:300px;
-  border:1px solid #334155;
+/* SIDEBAR */
+.sidebar {
+  background:#1e293b;
   padding:10px;
-  border-radius:10px;
-  background:#020617;
 }
 
-.todo {
-  display:flex;
-  gap:8px;
-  margin:5px 0;
+/* NOTES PANEL */
+.notes-panel {
+  background:#0f172a;
+  padding:10px;
 }
 
-table {
-  width:100%;
-  margin-top:10px;
-  border-collapse:collapse;
+.note-item {
+  padding:8px;
+  cursor:pointer;
+  border-radius:6px;
 }
 
-td, th {
-  border:1px solid #444;
-  padding:6px;
+.note-item:hover {
+  background:#1e293b;
+}
+
+/* EDITOR AREA */
+.editor-area {
+  padding:15px;
 }
