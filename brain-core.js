@@ -297,3 +297,41 @@ if(notes.length){
 }else{
   createNote();
 }
+document.addEventListener("DOMContentLoaded", () => {
+
+  // 🔁 RE-GET ELEMENTS AFTER DOM LOAD
+  els.addTaskBtn = document.getElementById("addTaskBtn");
+  els.addRowBtn = document.getElementById("addRowBtn");
+
+  // ================= BUTTONS =================
+  if(els.addTaskBtn){
+    els.addTaskBtn.addEventListener("click", () => {
+      console.log("Adding task...");
+      appendTodoRow("", false);
+      triggerAutoSave();
+    });
+  } else {
+    console.error("addTaskBtn NOT FOUND");
+  }
+
+  if(els.addRowBtn){
+    els.addRowBtn.addEventListener("click", () => {
+      console.log("Adding row...");
+      appendTableRow("", "");
+      triggerAutoSave();
+    });
+  } else {
+    console.error("addRowBtn NOT FOUND");
+  }
+
+  // ================= INIT =================
+  buildFolders();
+  renderNotesList();
+
+  if(notes.length){
+    openNote(notes[0].id);
+  } else {
+    createNote();
+  }
+
+});
