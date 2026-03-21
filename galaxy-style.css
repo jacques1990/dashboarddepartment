@@ -1,6 +1,14 @@
+body {
+  margin:0;
+  font-family:Arial;
+  background:linear-gradient(135deg,#020617,#0f172a);
+  color:white;
+}
+
+/* LAYOUT */
 .layout {
   display:grid;
-  grid-template-columns: 220px 260px 1fr;
+  grid-template-columns:220px 260px 1fr;
   height:100vh;
 }
 
@@ -8,6 +16,15 @@
 .sidebar {
   background:#1e293b;
   padding:10px;
+}
+
+.folder {
+  padding:6px;
+  cursor:pointer;
+}
+
+.folder:hover {
+  background:#334155;
 }
 
 /* NOTES PANEL */
@@ -29,4 +46,65 @@
 /* EDITOR AREA */
 .editor-area {
   padding:15px;
+}
+
+/* TOP BAR */
+.top-bar {
+  display:flex;
+  gap:10px;
+  margin-bottom:10px;
+}
+
+input, select {
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #334155;
+  background:#020617;
+  color:white;
+}
+
+/* BUTTONS */
+button {
+  background:#2563eb;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+/* TOOL BAR */
+.tool-bar {
+  margin-bottom:10px;
+  display:flex;
+  gap:10px;
+}
+
+/* EDITOR */
+.editor {
+  min-height:400px;
+  border:2px solid #38bdf8;
+  padding:15px;
+  border-radius:12px;
+  background:#020617;
+}
+
+/* TODO */
+.todo {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin:6px 0;
+}
+
+/* TABLE */
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+td, th {
+  border:1px solid #475569;
+  padding:6px;
 }
