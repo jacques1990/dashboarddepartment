@@ -2,7 +2,7 @@ const STORAGE_KEY = "lifeCityNotesClean";
 let notes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
 let currentNote = null;
 
-const API_URL = "https://script.google.com/macros/s/AKfycbw1OhGVH69-qittQitWrO7iDCVZUxne0GWXm_6w_EAf3qFUIATGIlaE09U7LfdHy2lG/exec";
+const API_URL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
 
 // ================= FOLDERS =================
 const folders = {
