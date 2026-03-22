@@ -1,29 +1,28 @@
-LIFE CITY GOOGLE SYNC NOTES
+FINAL NEON NOTES PACKAGE
 
-Files included:
+Files:
 - neon-notes.html
 - galaxy-style.css
 - brain-core.js
-- memory-vault.json
 - google-apps-script.gs
+- memory-vault.json
 
 SETUP
-1. Put all files in the same folder.
-2. Open neon-notes.html in your browser.
-3. In Google Sheets, create columns:
-   ID | Title | Content | Date | Department | Todos | Table
-4. Open Extensions > Apps Script in that sheet.
-5. Paste the contents of google-apps-script.gs into Apps Script.
-6. Deploy as Web App:
+1. Upload neon-notes.html, galaxy-style.css, and brain-core.js to your site or repo.
+2. In your Google Sheet, create an Apps Script project.
+3. Replace the Apps Script code with google-apps-script.gs.
+4. Deploy as Web App:
    - Execute as: Me
-   - Who has access: Anyone
-7. Copy the Web App URL.
-8. Open brain-core.js and replace:
-   PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE
-   with your real Web App URL.
-9. Save a note. It will save locally and sync to Google Sheets.
+   - Access: Anyone
+5. If your script URL changes, update SHEETS_WEB_APP_URL in brain-core.js.
+6. Open neon-notes.html.
 
-NOTES
-- LocalStorage is the live memory inside the browser.
-- memory-vault.json is your backup/export file.
-- Current sync mode appends a new row on each save.
+WHAT WORKS
+- New notes
+- Add task
+- Add table row
+- Auto-save locally
+- Auto-sync to Google Sheets
+- Load old notes from Google on another device
+- Export JSON
+- Separate Google sheets by Department_Month
