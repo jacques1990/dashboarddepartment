@@ -500,3 +500,22 @@ function deleteNote(){
 function escapeHtmlAttr(text){
   return escapeHtml(text).replace(/'/g, "&#39;");
 }
+async function deleteFromGoogle(noteId){
+
+  try{
+    await fetch(SHEETS_WEB_APP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "DELETE",
+        id: noteId
+      })
+    });
+
+    setStatus("Deleted from Google ✅");
+
+  }catch(err){
+    console.error(err);
+    setStatus("Google delete failed ❌", true);
+  }
+}
