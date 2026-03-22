@@ -3,7 +3,7 @@ const DEFAULT_FOLDERS = {
   "2026": ["January","February","March","April","May","June","July","August","September","October","November","December"]
 };
 
-const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwUgnwePi-RRIs0hhxkuQ7NHNoSoLupdzKWYthpzusFmchlpLkKnFKlPMrjoKCaCHJh/exec";
+const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwp7qJUoaO0BsMVjAPsB-JuCYNrDuOJ3LcywZrIJUBatmbS08_B1cIwHNcfvHyjc9di/exec";
 
 let notes = [];
 let currentNoteId = null;
