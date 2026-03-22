@@ -3,7 +3,7 @@ const DEFAULT_FOLDERS = {
   "2026": ["January","February","March","April","May","June","July","August","September","October","November","December"]
 };
 
-const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwUkI0A5-Ou3KShmBBUqemJhEeGKua48b6c6XjKCN7f_yJHW7iTitOwixtSiGdARxns/exec";
+const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwp7qJUoaO0BsMVjAPsB-JuCYNrDuOJ3LcywZrIJUBatmbS08_B1cIwHNcfvHyjc9di/exec";
 
 let notes = [];
 let currentNoteId = null;
@@ -47,6 +47,9 @@ function bindEvents(){
   els.content?.addEventListener("input", triggerAutoSave);
   els.todoList?.addEventListener("input", triggerAutoSave);
   els.tableBody?.addEventListener("input", triggerAutoSave);
+  els.deleteBtn = document.getElementById("deleteBtn");
+
+els.deleteBtn?.addEventListener("click", deleteNote);
 
   els.todoList?.addEventListener("change", (e) => {
     if (e.target && e.target.type === "checkbox") {
@@ -466,7 +469,53 @@ function formatDate(iso){
 function escapeHtml(text){
   return String(text).replace(/[&<>"]/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[ch]));
 }
+function deleteNote(){
+
+  const note = getCurrentNote();
+  if(!note) return;
+
+  const confirmDelete = confirm("Delete this note permanently?");
+  if(!confirmDelete) return;
+
+  // remove locally
+  notes = notes.filter(n => String(n.id) !== String(note.id));
+
+  persistLocal();
+
+  // update UI
+  renderNotesList();
+
+  if(notes.length){
+    openNote(notes[0].id);
+  } else {
+    createNote();
+  }
+
+  setStatus("Deleted locally 🗑️");
+
+  // 🔥 sync delete to Google
+  deleteFromGoogle(note.id);
+}
 
 function escapeHtmlAttr(text){
   return escapeHtml(text).replace(/'/g, "&#39;");
+}
+async function deleteFromGoogle(noteId){
+
+  try{
+    await fetch(SHEETS_WEB_APP_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({
+        action: "DELETE",
+        id: noteId
+      })
+    });
+
+    setStatus("Deleted from Google ✅");
+
+  }catch(err){
+    console.error(err);
+    setStatus("Google delete failed ❌", true);
+  }
 }
