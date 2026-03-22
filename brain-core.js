@@ -2,11 +2,18 @@ const STORAGE_KEY = "lifeCityNotesV2";
 
 const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwp7qJUoaO0BsMVjAPsB-JuCYNrDuOJ3LcywZrIJUBatmbS08_B1cIwHNcfvHyjc9di/exec";
 
+// ================= FOLDERS =================
+const DEFAULT_FOLDERS = {
+  "2026": [
+    "January","February","March","April","May","June",
+    "July","August","September","October","November","December"
+  ]
+};
+
 let notes = [];
 let currentNoteId = null;
+let activeMonthFilter = null;
 let autoSaveTimer = null;
-let syncTimer = null;
-let lastSavedHash = "";
 
 let els = {};
 
@@ -20,12 +27,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 // ================= INIT APP =================
 async function initApp(){
 
+  buildFolders();
+
+  // 🔥 load from google first
   try{
-    await loadFromGoogle(true); // 🔥 cloud first
+    await loadFromGoogle(true);
   }catch(e){
     console.error(e);
   }
 
+  // fallback local
   if(!notes.length){
     const local = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     notes = local;
@@ -45,6 +56,7 @@ async function initApp(){
 // ================= ELEMENTS =================
 function bindElements(){
   els = {
+    folders: document.getElementById("folders"),
     notesList: document.getElementById("notesList"),
     title: document.getElementById("title"),
     department: document.getElementById("department"),
@@ -77,7 +89,6 @@ function bindEvents(){
   };
 
   els.deleteBtn.onclick = deleteNote;
-
   els.newNoteBtn.onclick = createNote;
 
   els.todoList.addEventListener("change", (e)=>{
@@ -89,6 +100,36 @@ function bindEvents(){
 
   els.todoList.addEventListener("input", triggerAutoSave);
   els.tableBody.addEventListener("input", triggerAutoSave);
+}
+
+// ================= FOLDERS =================
+function buildFolders(){
+
+  if(!els.folders) return;
+
+  els.folders.innerHTML = "";
+
+  Object.entries(DEFAULT_FOLDERS).forEach(([year, months]) => {
+
+    const yearDiv = document.createElement("div");
+    yearDiv.innerText = year;
+    yearDiv.className = "folder-item";
+    els.folders.appendChild(yearDiv);
+
+    months.forEach(month => {
+
+      const m = document.createElement("div");
+      m.innerText = month;
+      m.className = "folder-item";
+
+      m.onclick = () => {
+        activeMonthFilter = month;
+        renderNotesList();
+      };
+
+      els.folders.appendChild(m);
+    });
+  });
 }
 
 // ================= GOOGLE LOAD =================
@@ -193,6 +234,13 @@ function deleteNote(){
 // ================= CREATE =================
 function createNote(){
 
+  let noteDate = new Date();
+
+  if(activeMonthFilter){
+    const index = new Date(Date.parse(activeMonthFilter+" 1, 2026")).getMonth();
+    noteDate.setMonth(index);
+  }
+
   const note = {
     id: Date.now(),
     title:"New Note",
@@ -200,7 +248,7 @@ function createNote(){
     department:"General",
     todos:[],
     table:[],
-    date:new Date().toISOString()
+    date: noteDate.toISOString()
   };
 
   notes.unshift(note);
@@ -225,6 +273,28 @@ function openNote(id){
 
   renderTodos(note.todos||[]);
   renderTable(note.table||[]);
+}
+
+// ================= FILTER =================
+function renderNotesList(){
+
+  els.notesList.innerHTML="";
+
+  let filtered = notes;
+
+  if(activeMonthFilter){
+    filtered = notes.filter(n=>{
+      const m = new Date(n.date).toLocaleString("default",{month:"long"});
+      return m === activeMonthFilter;
+    });
+  }
+
+  filtered.forEach(n=>{
+    const div=document.createElement("div");
+    div.innerText=n.title;
+    div.onclick=()=>openNote(n.id);
+    els.notesList.appendChild(div);
+  });
 }
 
 // ================= TODO =================
@@ -266,16 +336,6 @@ function renderTable(arr){
 }
 
 // ================= UI =================
-function renderNotesList(){
-  els.notesList.innerHTML="";
-  notes.forEach(n=>{
-    const div=document.createElement("div");
-    div.innerText=n.title;
-    div.onclick=()=>openNote(n.id);
-    els.notesList.appendChild(div);
-  });
-}
-
 function applyStrikeThrough(cb){
   const input=cb.nextElementSibling;
   input.style.textDecoration=cb.checked?"line-through":"none";
