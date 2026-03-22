@@ -1,31 +1,51 @@
 const STORAGE_KEY = "lifeCityNotesV2";
-const DEFAULT_FOLDERS = {
-  "2026": ["January","February","March","April","May","June","July","August","September","October","November","December"]
-};
 
 const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwp7qJUoaO0BsMVjAPsB-JuCYNrDuOJ3LcywZrIJUBatmbS08_B1cIwHNcfvHyjc9di/exec";
 
 let notes = [];
 let currentNoteId = null;
-let activeMonthFilter = null;
 let autoSaveTimer = null;
 let syncTimer = null;
 let lastSavedHash = "";
 
 let els = {};
 
-document.addEventListener("DOMContentLoaded", () => {
+// ================= INIT =================
+document.addEventListener("DOMContentLoaded", async () => {
   bindElements();
   bindEvents();
-  initApp();
+  await initApp();
 });
 
+// ================= INIT APP =================
+async function initApp(){
+
+  try{
+    await loadFromGoogle(true); // 🔥 cloud first
+  }catch(e){
+    console.error(e);
+  }
+
+  if(!notes.length){
+    const local = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    notes = local;
+  }
+
+  if(!notes.length){
+    createNote();
+  }
+
+  renderNotesList();
+
+  if(notes[0]){
+    openNote(notes[0].id);
+  }
+}
+
+// ================= ELEMENTS =================
 function bindElements(){
   els = {
-    folders: document.getElementById("folders"),
     notesList: document.getElementById("notesList"),
-    noteCount: document.getElementById("noteCount"),
-    searchBox: document.getElementById("searchBox"),
     title: document.getElementById("title"),
     department: document.getElementById("department"),
     content: document.getElementById("content"),
@@ -34,488 +54,233 @@ function bindElements(){
     statusText: document.getElementById("statusText"),
     addTaskBtn: document.getElementById("addTaskBtn"),
     addRowBtn: document.getElementById("addRowBtn"),
-    exportBtn: document.getElementById("exportBtn"),
-    newNoteBtn: document.getElementById("newNoteBtn"),
-    saveBtn: document.getElementById("saveBtn")
+    deleteBtn: document.getElementById("deleteBtn"),
+    newNoteBtn: document.getElementById("newNoteBtn")
   };
 }
 
+// ================= EVENTS =================
 function bindEvents(){
-  els.searchBox?.addEventListener("input", renderNotesList);
-  els.title?.addEventListener("input", triggerAutoSave);
-  els.department?.addEventListener("change", triggerAutoSave);
-  els.content?.addEventListener("input", triggerAutoSave);
-  els.todoList?.addEventListener("input", triggerAutoSave);
-  els.tableBody?.addEventListener("input", triggerAutoSave);
-  els.deleteBtn = document.getElementById("deleteBtn");
 
-els.deleteBtn?.addEventListener("click", deleteNote);
+  els.title.oninput = triggerAutoSave;
+  els.department.onchange = triggerAutoSave;
+  els.content.oninput = triggerAutoSave;
 
-  els.todoList?.addEventListener("change", (e) => {
-    if (e.target && e.target.type === "checkbox") {
+  els.addTaskBtn.onclick = () => {
+    appendTodoRow();
+    triggerAutoSave();
+  };
+
+  els.addRowBtn.onclick = () => {
+    appendTableRow();
+    triggerAutoSave();
+  };
+
+  els.deleteBtn.onclick = deleteNote;
+
+  els.newNoteBtn.onclick = createNote;
+
+  els.todoList.addEventListener("change", (e)=>{
+    if(e.target.type==="checkbox"){
       applyStrikeThrough(e.target);
-      updateProgress();
       triggerAutoSave();
     }
   });
 
-  els.addTaskBtn?.addEventListener("click", () => {
-    appendTodoRow("", false);
-    updateProgress();
-    triggerAutoSave();
-  });
-
-  els.addRowBtn?.addEventListener("click", () => {
-    appendTableRow("", "");
-    triggerAutoSave();
-  });
-
-  els.exportBtn?.addEventListener("click", exportMemory);
-  els.newNoteBtn?.addEventListener("click", createNote);
-  els.saveBtn?.addEventListener("click", () => autoSave(true));
+  els.todoList.addEventListener("input", triggerAutoSave);
+  els.tableBody.addEventListener("input", triggerAutoSave);
 }
 
-async function initApp(){
-  buildFolders();
+// ================= GOOGLE LOAD =================
+async function loadFromGoogle(initial=false){
 
-  try {
-    const localNotes = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-    if (Array.isArray(localNotes) && localNotes.length) {
-      notes = localNotes;
-      renderNotesList();
-      if (notes[0]) openNote(notes[0].id, false);
+  try{
+    const res = await fetch(SHEETS_WEB_APP_URL + "?t=" + Date.now());
+    const data = await res.json();
+
+    if(!Array.isArray(data)) return;
+
+    const currentId = currentNoteId;
+
+    notes = data.sort((a,b)=> new Date(b.date)-new Date(a.date));
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+    renderNotesList();
+
+    if(initial){
+      const found = notes.find(n=>n.id==currentId);
+      if(found) openNote(found.id);
+      else if(notes[0]) openNote(notes[0].id);
     }
-  } catch (e) {
-    console.error("Local load failed", e);
-  }
 
-  await loadFromGoogle();
+    setStatus("Synced 🌐");
 
-  if (!notes.length) {
-    createNote();
+  }catch(e){
+    console.error(e);
+    setStatus("Sync failed ❌");
   }
 }
 
-function setStatus(msg, isError = false){
-  if (!els.statusText) return;
-  els.statusText.textContent = msg;
-  els.statusText.style.color = isError ? "#fca5a5" : "#94a3b8";
-}
+// ================= AUTO SYNC =================
+setInterval(()=>{
+  loadFromGoogle(false);
+},10000);
 
-function persistLocal(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
-}
-
-function monthNameFromDate(iso){
-  return new Date(iso).toLocaleString("default", { month: "long" });
-}
-
-function buildFolders(){
-  if (!els.folders) return;
-  els.folders.innerHTML = "";
-
-  Object.entries(DEFAULT_FOLDERS).forEach(([year, months]) => {
-    const yearDiv = document.createElement("div");
-    yearDiv.className = "folder-item folder-year";
-    yearDiv.textContent = year;
-    yearDiv.addEventListener("click", () => {
-      activeMonthFilter = null;
-      renderNotesList();
-      updateFolderHighlight();
-    });
-    els.folders.appendChild(yearDiv);
-
-    months.forEach(month => {
-      const monthDiv = document.createElement("div");
-      monthDiv.className = "folder-item folder-month";
-      monthDiv.dataset.month = month;
-      monthDiv.textContent = month;
-      monthDiv.addEventListener("click", () => {
-        activeMonthFilter = month;
-        renderNotesList();
-        updateFolderHighlight();
-      });
-      els.folders.appendChild(monthDiv);
-    });
-  });
-
-  updateFolderHighlight();
-}
-
-function updateFolderHighlight(){
-  document.querySelectorAll(".folder-month").forEach(el => {
-    el.classList.toggle("active", el.dataset.month === activeMonthFilter);
-  });
-}
-
-function createEmptyNote(){
-  let noteDate = new Date();
-
-  if (activeMonthFilter) {
-    const monthIndex = new Date(Date.parse(activeMonthFilter + " 1, 2026")).getMonth();
-    noteDate.setMonth(monthIndex);
-  }
-
-  return {
-    id: Date.now(),
-    title: "New Note",
-    content: "",
-    date: noteDate.toISOString(),
-    department: "Controlled Documents",
-    todos: [],
-    table: []
-  };
-}
-
-function getCurrentNote(){
-  return notes.find(n => String(n.id) === String(currentNoteId)) || null;
-}
-
-function createNote(){
-  const note = createEmptyNote();
-  notes.unshift(note);
-  currentNoteId = note.id;
-  persistLocal();
-  renderNotesList();
-  openNote(note.id, false);
-  setStatus("New note created.");
-}
-
-function openNote(id, updateList = true){
-  const note = notes.find(n => String(n.id) === String(id));
-  if (!note) return;
-
-  currentNoteId = note.id;
-  els.title.value = note.title || "";
-  els.department.value = note.department || "Controlled Documents";
-  els.content.value = note.content || "";
-
-  renderTodos(note.todos || []);
-  renderTable(note.table || []);
-  updateProgress();
-
-  lastSavedHash = buildNoteHash(note);
-
-  if (updateList) renderNotesList();
-  setStatus("Note loaded.");
-}
-
-function renderTodos(todoItems){
-  els.todoList.innerHTML = "";
-  todoItems.forEach(todo => appendTodoRow(todo.text || "", !!todo.done));
-}
-
-function renderTable(rows){
-  els.tableBody.innerHTML = "";
-  rows.forEach(row => appendTableRow(row.item || "", row.value || ""));
-}
-
-function appendTodoRow(text = "", done = false){
-  const row = document.createElement("div");
-  row.className = "todo-row";
-  row.innerHTML = `
-    <input type="checkbox" ${done ? "checked" : ""}>
-    <input class="todo-input" type="text" value="${escapeHtmlAttr(text)}" placeholder="Task">
-  `;
-  els.todoList.appendChild(row);
-
-  const checkbox = row.querySelector('input[type="checkbox"]');
-  applyStrikeThrough(checkbox);
-}
-
-function appendTableRow(item = "", value = ""){
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td><input class="table-input" type="text" value="${escapeHtmlAttr(item)}" placeholder="Item"></td>
-    <td><input class="table-input" type="text" value="${escapeHtmlAttr(value)}" placeholder="Value"></td>
-  `;
-  els.tableBody.appendChild(tr);
-}
-
-function collectTodos(){
-  return [...els.todoList.querySelectorAll(".todo-row")]
-    .map(row => {
-      const inputs = row.querySelectorAll("input");
-      return {
-        done: !!inputs[0]?.checked,
-        text: (inputs[1]?.value || "").trim()
-      };
-    })
-    .filter(t => t.text || t.done);
-}
-
-function collectTable(){
-  return [...els.tableBody.querySelectorAll("tr")]
-    .map(tr => {
-      const inputs = tr.querySelectorAll("input");
-      return {
-        item: (inputs[0]?.value || "").trim(),
-        value: (inputs[1]?.value || "").trim()
-      };
-    })
-    .filter(r => r.item || r.value);
-}
-
-function buildNoteHash(noteLike){
-  return JSON.stringify({
-    title: noteLike.title || "",
-    department: noteLike.department || "",
-    content: noteLike.content || "",
-    todos: noteLike.todos || [],
-    table: noteLike.table || []
-  });
-}
-
+// ================= SAVE =================
 function triggerAutoSave(){
   clearTimeout(autoSaveTimer);
-  autoSaveTimer = setTimeout(() => autoSave(false), 800);
+  autoSaveTimer = setTimeout(()=>autoSave(),800);
 }
 
-function autoSave(forceSync = false){
-  const note = getCurrentNote();
-  if (!note) return;
+function autoSave(){
 
-  const snapshot = {
-    title: els.title.value.trim() || "Untitled Note",
-    department: els.department.value,
-    content: els.content.value,
-    todos: collectTodos(),
-    table: collectTable()
-  };
+  const note = notes.find(n=>n.id==currentNoteId);
+  if(!note) return;
 
-  const nextHash = buildNoteHash(snapshot);
-  if (!forceSync && nextHash === lastSavedHash) return;
+  note.title = els.title.value;
+  note.department = els.department.value;
+  note.content = els.content.value;
+  note.todos = collectTodos();
+  note.table = collectTable();
+  note.date = new Date().toISOString();
 
-  lastSavedHash = nextHash;
-
-  note.title = snapshot.title;
-  note.department = snapshot.department;
-  note.content = snapshot.content;
-  note.todos = snapshot.todos;
-  note.table = snapshot.table;
-  note.date = note.date || new Date().toISOString();
-
-  persistLocal();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
   renderNotesList();
-  updateProgress();
-  setStatus(forceSync ? "Saving..." : "Auto-saving...");
 
-  debounceGoogleSync(note, forceSync ? 0 : 2000);
+  syncToGoogle(note);
 }
 
-function debounceGoogleSync(note, delayMs = 2000){
-  clearTimeout(syncTimer);
-  syncTimer = setTimeout(() => {
-    syncToGoogle(note);
-  }, delayMs);
-}
-
+// ================= GOOGLE SAVE =================
 async function syncToGoogle(note){
-  if (!SHEETS_WEB_APP_URL) {
-    setStatus("No Google Apps Script URL set.", true);
-    return;
-  }
 
-  try {
-    setStatus("Syncing...");
-    const response = await fetch(SHEETS_WEB_APP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
+  try{
+    await fetch(SHEETS_WEB_APP_URL,{
+      method:"POST",
+      headers:{"Content-Type":"text/plain"},
       body: JSON.stringify(note)
     });
 
-    const text = await response.text();
-    if (!response.ok) throw new Error(text || "Sync failed");
+    setStatus("Saved ✅");
 
-    setStatus("Synced ✅");
-  } catch (error) {
-    console.error(error);
-    setStatus("Sync failed ❌", true);
+  }catch(e){
+    console.error(e);
+    setStatus("Save failed ❌");
   }
 }
 
-async function loadFromGoogle(){
-  if (!SHEETS_WEB_APP_URL) return;
-
-  try {
-    setStatus("Loading from Google...");
-    const response = await fetch(SHEETS_WEB_APP_URL);
-    const data = await response.json();
-
-    const incoming = Array.isArray(data) ? data : (Array.isArray(data.notes) ? data.notes : []);
-
-    if (incoming.length) {
-      notes = incoming.map(normalizeIncomingNote).sort((a, b) => new Date(b.date) - new Date(a.date));
-      persistLocal();
-      renderNotesList();
-
-      const existingCurrent = currentNoteId && notes.find(n => String(n.id) === String(currentNoteId));
-      if (existingCurrent) {
-        openNote(existingCurrent.id, false);
-      } else if (notes[0]) {
-        openNote(notes[0].id, false);
-      }
-    }
-
-    setStatus("Loaded from Google ✅");
-  } catch (error) {
-    console.error(error);
-    setStatus("Load failed ❌", true);
-  }
-}
-
-function normalizeIncomingNote(row){
-  return {
-    id: row.id,
-    title: row.title || "Untitled Note",
-    department: row.department || "Controlled Documents",
-    content: row.content || "",
-    todos: Array.isArray(row.todos) ? row.todos : [],
-    table: Array.isArray(row.table) ? row.table : [],
-    date: row.date || new Date().toISOString()
-  };
-}
-
-function getFilteredNotes(){
-  const query = (els.searchBox.value || "").trim().toLowerCase();
-
-  return notes
-    .filter(note => {
-      const matchesMonth = !activeMonthFilter || monthNameFromDate(note.date) === activeMonthFilter;
-      const haystack = [note.title, note.content, note.department].join(" ").toLowerCase();
-      const matchesSearch = !query || haystack.includes(query);
-      return matchesMonth && matchesSearch;
-    })
-    .sort((a, b) => new Date(b.date) - new Date(a.date));
-}
-
-function renderNotesList(){
-  const filtered = getFilteredNotes();
-  els.notesList.innerHTML = "";
-  if (els.noteCount) els.noteCount.textContent = filtered.length;
-
-  if (!filtered.length) {
-    els.notesList.innerHTML = '<div class="note-card"><div class="note-preview">No notes found.</div></div>';
-    return;
-  }
-
-  filtered.forEach(note => {
-    const card = document.createElement("div");
-    card.className = "note-card" + (String(note.id) === String(currentNoteId) ? " active" : "");
-    card.addEventListener("click", () => openNote(note.id));
-
-    const preview = (note.content || "").replace(/\s+/g, " ").slice(0, 90);
-
-    card.innerHTML = `
-      <div class="note-title">${escapeHtml(note.title || "Untitled Note")}</div>
-      <div class="note-meta">${escapeHtml(note.department || "No Department")} • ${formatDate(note.date)}</div>
-      <div class="note-preview">${escapeHtml(preview || "Empty note")}</div>
-    `;
-
-    els.notesList.appendChild(card);
-  });
-}
-
-function applyStrikeThrough(checkbox){
-  const textInput = checkbox?.nextElementSibling;
-  if (!textInput) return;
-
-  if (checkbox.checked) {
-    textInput.style.textDecoration = "line-through";
-    textInput.style.opacity = "0.6";
-  } else {
-    textInput.style.textDecoration = "none";
-    textInput.style.opacity = "1";
-  }
-}
-
-function updateProgress(){
-  const todos = collectTodos();
-  const total = todos.length;
-  const done = todos.filter(t => t.done).length;
-  setStatus(`Progress: ${done}/${total}`);
-}
-
-function exportMemory(){
-  try {
-    const data = JSON.stringify({ notes }, null, 2);
-    const blob = new Blob([data], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "life-city-memory.json";
-
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    setStatus("JSON exported ✅");
-  } catch (error) {
-    console.error(error);
-    setStatus("Export failed ❌", true);
-  }
-}
-
-function formatDate(iso){
-  return new Date(iso).toLocaleString([], {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
-  });
-}
-
-function escapeHtml(text){
-  return String(text).replace(/[&<>"]/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[ch]));
-}
+// ================= DELETE =================
 function deleteNote(){
 
-  const note = getCurrentNote();
+  const note = notes.find(n=>n.id==currentNoteId);
   if(!note) return;
 
-  const confirmDelete = confirm("Delete this note permanently?");
-  if(!confirmDelete) return;
+  if(!confirm("Delete note?")) return;
 
-  // remove locally
-  notes = notes.filter(n => String(n.id) !== String(note.id));
+  notes = notes.filter(n=>n.id!=note.id);
 
-  persistLocal();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
 
-  // update UI
+  fetch(SHEETS_WEB_APP_URL,{
+    method:"POST",
+    headers:{"Content-Type":"text/plain"},
+    body: JSON.stringify({action:"DELETE",id:note.id})
+  });
+
+  if(notes[0]) openNote(notes[0].id);
   renderNotesList();
-
-  if(notes.length){
-    openNote(notes[0].id);
-  } else {
-    createNote();
-  }
-
-  setStatus("Deleted locally 🗑️");
-
-  // 🔥 sync delete to Google
-  deleteFromGoogle(note.id);
 }
 
-function escapeHtmlAttr(text){
-  return escapeHtml(text).replace(/'/g, "&#39;");
+// ================= CREATE =================
+function createNote(){
+
+  const note = {
+    id: Date.now(),
+    title:"New Note",
+    content:"",
+    department:"General",
+    todos:[],
+    table:[],
+    date:new Date().toISOString()
+  };
+
+  notes.unshift(note);
+  currentNoteId = note.id;
+
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(notes));
+  renderNotesList();
+  openNote(note.id);
 }
-async function deleteFromGoogle(noteId){
 
-  try{
-    await fetch(SHEETS_WEB_APP_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({
-        action: "DELETE",
-        id: noteId
-      })
-    });
+// ================= OPEN =================
+function openNote(id){
 
-    setStatus("Deleted from Google ✅");
+  const note = notes.find(n=>n.id==id);
+  if(!note) return;
 
-  }catch(err){
-    console.error(err);
-    setStatus("Google delete failed ❌", true);
-  }
+  currentNoteId = id;
+
+  els.title.value = note.title || "";
+  els.department.value = note.department || "";
+  els.content.value = note.content || "";
+
+  renderTodos(note.todos||[]);
+  renderTable(note.table||[]);
+}
+
+// ================= TODO =================
+function appendTodoRow(text="",done=false){
+  const div=document.createElement("div");
+  div.innerHTML=`<input type="checkbox" ${done?"checked":""}><input value="${text}">`;
+  els.todoList.appendChild(div);
+}
+
+function collectTodos(){
+  return [...els.todoList.children].map(r=>{
+    const i=r.querySelectorAll("input");
+    return {done:i[0].checked,text:i[1].value};
+  });
+}
+
+function renderTodos(arr){
+  els.todoList.innerHTML="";
+  arr.forEach(t=>appendTodoRow(t.text,t.done));
+}
+
+// ================= TABLE =================
+function appendTableRow(a="",b=""){
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td><input value="${a}"></td><td><input value="${b}"></td>`;
+  els.tableBody.appendChild(tr);
+}
+
+function collectTable(){
+  return [...els.tableBody.children].map(r=>{
+    const i=r.querySelectorAll("input");
+    return {item:i[0].value,value:i[1].value};
+  });
+}
+
+function renderTable(arr){
+  els.tableBody.innerHTML="";
+  arr.forEach(r=>appendTableRow(r.item,r.value));
+}
+
+// ================= UI =================
+function renderNotesList(){
+  els.notesList.innerHTML="";
+  notes.forEach(n=>{
+    const div=document.createElement("div");
+    div.innerText=n.title;
+    div.onclick=()=>openNote(n.id);
+    els.notesList.appendChild(div);
+  });
+}
+
+function applyStrikeThrough(cb){
+  const input=cb.nextElementSibling;
+  input.style.textDecoration=cb.checked?"line-through":"none";
+}
+
+function setStatus(msg){
+  if(els.statusText) els.statusText.innerText=msg;
 }
