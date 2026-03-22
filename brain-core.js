@@ -14,7 +14,7 @@ let syncTimer;
 let lastSavedHash = "";
 
 // ✅ YOUR GOOGLE API (ADDED)
-const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw2Q0l8P-RN-SW-ma0obKzQiP-fB04tBCGVck3clTvRdLV5lt6I0ImP9JIf8HW-RvMr/exec";
+const SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwUkI0A5-Ou3KShmBBUqemJhEeGKua48b6c6XjKCN7f_yJHW7iTitOwixtSiGdARxns/exec";
 
 // ELEMENTS
 const els = {
