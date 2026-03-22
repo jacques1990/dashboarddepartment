@@ -381,3 +381,25 @@ function exportMemory(){
   setStatus("JSON exported ✅");
 }
 document.getElementById("exportBtn").addEventListener("click", exportMemory);
+async function loadFromGoogle(){
+
+  try{
+    const res = await fetch(SHEETS_WEB_APP_URL);
+    const data = await res.json();
+
+    notes = data;
+
+    persistLocal();
+    renderNotesList();
+
+    if(notes.length){
+      openNote(notes[0].id);
+    }
+
+    setStatus("Loaded from Google ✅");
+
+  }catch(e){
+    console.error(e);
+    setStatus("Load failed ❌", true);
+  }
+}
