@@ -47,6 +47,9 @@ function bindEvents(){
   els.content?.addEventListener("input", triggerAutoSave);
   els.todoList?.addEventListener("input", triggerAutoSave);
   els.tableBody?.addEventListener("input", triggerAutoSave);
+  els.deleteBtn = document.getElementById("deleteBtn");
+
+els.deleteBtn?.addEventListener("click", deleteNote);
 
   els.todoList?.addEventListener("change", (e) => {
     if (e.target && e.target.type === "checkbox") {
@@ -465,6 +468,33 @@ function formatDate(iso){
 
 function escapeHtml(text){
   return String(text).replace(/[&<>"]/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[ch]));
+}
+function deleteNote(){
+
+  const note = getCurrentNote();
+  if(!note) return;
+
+  const confirmDelete = confirm("Delete this note permanently?");
+  if(!confirmDelete) return;
+
+  // remove locally
+  notes = notes.filter(n => String(n.id) !== String(note.id));
+
+  persistLocal();
+
+  // update UI
+  renderNotesList();
+
+  if(notes.length){
+    openNote(notes[0].id);
+  } else {
+    createNote();
+  }
+
+  setStatus("Deleted locally 🗑️");
+
+  // 🔥 sync delete to Google
+  deleteFromGoogle(note.id);
 }
 
 function escapeHtmlAttr(text){
