@@ -325,34 +325,45 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // ================= INIT =================
-  loadFromGoogle();
+// ================= INIT =================
+async function initApp(){
+
   buildFolders();
+
+  try{
+    await loadFromGoogle(); // 🔥 WAIT for cloud data
+  }catch(e){
+    console.error(e);
+  }
+
+  // fallback only if still empty
+  if(!notes.length){
+    createNote();
+  }
+}
+
+// RUN
+initApp();
+async function loadFromGoogle(){
+
+  const res = await fetch(SHEETS_WEB_APP_URL);
+  const data = await res.json();
+
+  if(Array.isArray(data)){
+    notes = data;
+  } else if(data.notes){
+    notes = data.notes;
+  }
+
+  persistLocal();
   renderNotesList();
 
   if(notes.length){
     openNote(notes[0].id);
-  } else {
-    createNote();
   }
 
-});
-async function loadFromGoogle(){
-
-  try{
-    const res = await fetch(SHEETS_WEB_APP_URL);
-    const data = await res.json();
-
-    if(Array.isArray(data)){
-      notes = data;
-      persistLocal();
-      renderNotesList();
-
-      if(notes.length){
-        openNote(notes[0].id);
-      }
-    }
-
-    setStatus("Loaded from Google ✅");
+  setStatus("Loaded from Google ✅");
+}
 
   }catch(e){
     console.error(e);
