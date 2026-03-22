@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Notes • Final Fixed</title>
+  <link rel="stylesheet" href="galaxy-style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">📓</div>
+        <div>
+          <div class="brand-title">Neon Notes</div>
+          <div class="brand-sub">Life City Notebook</div>
+        </div>
+      </div>
+
+      <div class="section-label">Folders</div>
+      <div id="folders" class="folders"></div>
+    </aside>
+
+    <section class="notes-panel">
+      <div class="notes-top">
+        <input id="searchBox" class="search-input" placeholder="Search notes..." />
+        <button id="newNoteBtn" class="primary-btn" type="button">+ New</button>
+      </div>
+
+      <div class="notes-meta">
+        <span>Notes</span>
+        <span id="noteCount">0</span>
+      </div>
+
+      <div id="notesList" class="notes-list"></div>
+    </section>
+
+    <main class="editor-panel">
+      <div class="toolbar-grid">
+        <input id="title" class="title-input" placeholder="Note title" />
+        <select id="department" class="department-select">
+          <option value="Controlled Documents">Controlled Documents</option>
+          <option value="Daily Logs & Planner">Daily Logs & Planner</option>
+          <option value="Finance">Finance</option>
+          <option value="Business">Business</option>
+          <option value="Major Projects">Major Projects</option>
+          <option value="Health, Fitness & Emergency">Health, Fitness & Emergency</option>
+          <option value="Communications">Communications</option>
+          <option value="Archives & Museum">Archives & Museum</option>
+        </select>
+      </div>
+
+      <textarea id="content" class="content-area" placeholder="Write your note here..."></textarea>
+
+      <div class="split-grid">
+        <section class="card">
+          <div class="card-head">
+            <h3>To-do List</h3>
+            <button id="addTaskBtn" class="mini-btn" type="button">+ Task</button>
+          </div>
+          <div id="todoList" class="todo-list"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-head">
+            <h3>Table</h3>
+            <button id="addRowBtn" class="mini-btn" type="button">+ Row</button>
+          </div>
+          <table class="notes-table">
+            <thead>
+              <tr><th>Item</th><th>Value</th></tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
+        </section>
+      </div>
+
+      <div class="bottom-bar">
+        <div id="statusText" class="status-text">Ready</div>
+        <div class="actions">
+          <button id="exportBtn" class="ghost-btn" type="button">Export JSON</button>
+          <button id="saveBtn" class="primary-btn" type="button">Save Now</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="brain-core.js"></script>
+</body>
+</html>

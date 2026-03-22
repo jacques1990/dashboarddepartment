@@ -1,0 +1,203 @@
+:root{
+  --bg:#07111f;
+  --bg-2:#0d1728;
+  --panel:#101827;
+  --panel-2:#0c1524;
+  --border:#243349;
+  --text:#e7eefb;
+  --muted:#94a3b8;
+  --primary:#38bdf8;
+  --primary-2:#4f46e5;
+  --shadow:0 14px 30px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:Inter,Arial,sans-serif;
+  color:var(--text);
+  background:linear-gradient(135deg,#04101b,#0d1728 50%,#131f36);
+}
+.app-shell{
+  display:grid;
+  grid-template-columns:260px 320px 1fr;
+  min-height:100vh;
+}
+.sidebar,.notes-panel,.editor-panel{min-height:100vh}
+.sidebar{
+  background:linear-gradient(180deg,#7c3aed,#312e81);
+  padding:18px 14px;
+}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:18px;
+}
+.brand-icon{
+  width:48px;height:48px;border-radius:14px;
+  display:grid;place-items:center;
+  background:rgba(255,255,255,.14);
+  font-size:24px;
+}
+.brand-title{font-size:20px;font-weight:800}
+.brand-sub{font-size:12px;opacity:.9}
+.section-label{
+  margin:18px 6px 8px;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  opacity:.92;
+}
+.folder-item{
+  padding:10px 12px;
+  border-radius:12px;
+  cursor:pointer;
+  margin-bottom:6px;
+  user-select:none;
+}
+.folder-item:hover,.folder-item.active{
+  background:rgba(255,255,255,.14);
+}
+.folder-year{font-weight:800}
+.folder-month{padding-left:20px;font-size:14px}
+
+.notes-panel{
+  background:#0a1324;
+  border-right:1px solid rgba(255,255,255,.06);
+  padding:16px;
+}
+.notes-top{
+  display:flex;
+  gap:10px;
+  margin-bottom:12px;
+}
+.notes-meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:10px;
+}
+.notes-list{display:grid;gap:10px}
+.note-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:12px;
+  cursor:pointer;
+  box-shadow:var(--shadow);
+}
+.note-card:hover,.note-card.active{
+  border-color:#4a6a92;
+  transform:translateY(-1px);
+}
+.note-title{font-weight:800;margin-bottom:6px}
+.note-meta,.note-preview{
+  color:var(--muted);
+  font-size:12px;
+}
+.note-preview{margin-top:6px;line-height:1.4}
+
+.editor-panel{padding:18px}
+.toolbar-grid{
+  display:grid;
+  grid-template-columns:1fr 260px;
+  gap:12px;
+  margin-bottom:14px;
+}
+.title-input,.department-select,.search-input,.content-area,.todo-input,.table-input{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--panel);
+  color:var(--text);
+  padding:12px 14px;
+  outline:none;
+}
+.title-input{
+  font-size:20px;
+  font-weight:800;
+  background:var(--bg-2);
+}
+.content-area{
+  min-height:250px;
+  resize:vertical;
+  line-height:1.55;
+  margin-bottom:16px;
+}
+.split-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+}
+.card{
+  background:rgba(16,24,39,.9);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:14px;
+  box-shadow:var(--shadow);
+}
+.card-head,.bottom-bar,.actions{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.todo-list{display:grid;gap:10px}
+.todo-row{
+  display:grid;
+  grid-template-columns:24px 1fr;
+  gap:10px;
+  align-items:center;
+}
+.todo-row input[type="checkbox"]{
+  width:18px;height:18px;
+}
+.notes-table{
+  width:100%;
+  border-collapse:collapse;
+}
+.notes-table th,.notes-table td{
+  border:1px solid var(--border);
+  padding:8px;
+}
+.notes-table th{
+  text-align:left;
+  color:var(--muted);
+  font-size:12px;
+}
+.bottom-bar{
+  margin-top:16px;
+}
+.status-text{
+  color:var(--muted);
+  font-size:13px;
+}
+.primary-btn,.ghost-btn,.mini-btn{
+  border:0;
+  border-radius:12px;
+  cursor:pointer;
+  padding:10px 14px;
+  font-weight:800;
+}
+.primary-btn{
+  background:linear-gradient(135deg,var(--primary),var(--primary-2));
+  color:white;
+}
+.ghost-btn,.mini-btn{
+  background:#17253b;
+  border:1px solid var(--border);
+  color:var(--text);
+}
+.mini-btn{padding:7px 10px;font-size:12px}
+
+@media (max-width: 1100px){
+  .app-shell{grid-template-columns:230px 290px 1fr}
+  .toolbar-grid{grid-template-columns:1fr}
+}
+@media (max-width: 900px){
+  .app-shell{grid-template-columns:1fr}
+  .sidebar,.notes-panel,.editor-panel{min-height:auto}
+  .split-grid{grid-template-columns:1fr}
+}
