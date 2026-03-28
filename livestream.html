@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Trading War Room</title>
+  <title>Trading War Room (Resizable)</title>
 
   <style>
     body {
@@ -9,6 +9,7 @@
       background:#000;
       color:white;
       font-family:Arial;
+      overflow:hidden;
     }
 
     .topbar {
@@ -18,16 +19,17 @@
       font-size:18px;
     }
 
-    .layout {
-      display:grid;
-      grid-template-columns: 3fr 2fr; /* 🔥 BIGGER SIDE */
+    .container {
+      display:flex;
       height:calc(100vh - 50px);
+      width:100%;
     }
 
-    /* MAIN SCREEN */
+    /* MAIN PANEL */
     .main {
+      width:60%;
+      min-width:200px;
       position:relative;
-      border-right:2px solid #111;
     }
 
     .main iframe {
@@ -36,23 +38,29 @@
       border:none;
     }
 
-    /* SIDE GRID */
+    /* RESIZER BAR */
+    .resizer {
+      width:6px;
+      background:#222;
+      cursor:col-resize;
+    }
+
+    .resizer:hover {
+      background:red;
+    }
+
+    /* SIDE PANEL */
     .side {
+      flex:1;
       display:grid;
-      grid-template-columns: repeat(2, 1fr); /* 🔥 2x column */
-      grid-auto-rows: 1fr;
+      grid-template-columns: repeat(2, 1fr);
       gap:8px;
       padding:8px;
     }
 
     .feed {
-      cursor:pointer;
       position:relative;
-      transition:0.2s;
-    }
-
-    .feed:hover {
-      transform:scale(1.02);
+      cursor:pointer;
     }
 
     .feed iframe {
@@ -80,15 +88,18 @@
 <body>
 
 <div class="topbar">
-  🔴 Trading War Room
+  🔴 Trading War Room (Drag Divider to Resize)
 </div>
 
-<div class="layout">
+<div class="container">
 
   <!-- MAIN -->
-  <div class="main">
+  <div class="main" id="mainPanel">
     <iframe id="mainPlayer"></iframe>
   </div>
+
+  <!-- RESIZER -->
+  <div class="resizer" id="resizer"></div>
 
   <!-- SIDE -->
   <div class="side" id="sideFeeds"></div>
@@ -135,6 +146,30 @@ function switchMain(url, element) {
   document.querySelectorAll(".feed").forEach(f => f.classList.remove("active"));
   element.classList.add("active");
 }
+
+/* 🔥 DRAG RESIZE LOGIC */
+const resizer = document.getElementById("resizer");
+const mainPanel = document.getElementById("mainPanel");
+
+let isDragging = false;
+
+resizer.addEventListener("mousedown", () => {
+  isDragging = true;
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+
+  let newWidth = (e.clientX / window.innerWidth) * 100;
+
+  if (newWidth > 20 && newWidth < 80) {
+    mainPanel.style.width = newWidth + "%";
+  }
+});
+
+document.addEventListener("mouseup", () => {
+  isDragging = false;
+});
 
 </script>
 
