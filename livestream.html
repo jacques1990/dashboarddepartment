@@ -20,7 +20,7 @@
 
     .layout {
       display:grid;
-      grid-template-columns: 2fr 1fr;
+      grid-template-columns: 3fr 2fr; /* 🔥 BIGGER SIDE */
       height:calc(100vh - 50px);
     }
 
@@ -39,15 +39,20 @@
     /* SIDE GRID */
     .side {
       display:grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: repeat(2, 1fr); /* 🔥 2x column */
       grid-auto-rows: 1fr;
-      gap:6px;
-      padding:6px;
+      gap:8px;
+      padding:8px;
     }
 
     .feed {
       cursor:pointer;
       position:relative;
+      transition:0.2s;
+    }
+
+    .feed:hover {
+      transform:scale(1.02);
     }
 
     .feed iframe {
@@ -58,10 +63,10 @@
 
     .label {
       position:absolute;
-      top:5px;
-      left:5px;
-      background:rgba(0,0,0,0.6);
-      padding:4px 8px;
+      top:6px;
+      left:6px;
+      background:rgba(0,0,0,0.7);
+      padding:5px 8px;
       font-size:12px;
       border-radius:4px;
     }
@@ -80,19 +85,18 @@
 
 <div class="layout">
 
-  <!-- MAIN SCREEN -->
+  <!-- MAIN -->
   <div class="main">
-    <iframe id="mainPlayer" src=""></iframe>
+    <iframe id="mainPlayer"></iframe>
   </div>
 
-  <!-- SIDE FEEDS -->
+  <!-- SIDE -->
   <div class="side" id="sideFeeds"></div>
 
 </div>
 
 <script>
 
-// ✅ Your cleaned embed links
 const streams = [
   {name:"Stream 1", url:"https://www.youtube.com/embed/Ap-UM1O9RBU"},
   {name:"Al Jazeera", url:"https://www.youtube.com/embed/l0tl9g0Jnf0"},
@@ -106,7 +110,6 @@ const streams = [
 const mainPlayer = document.getElementById("mainPlayer");
 const sideFeeds = document.getElementById("sideFeeds");
 
-// load side feeds
 streams.forEach((s, index) => {
 
   const div = document.createElement("div");
@@ -121,15 +124,12 @@ streams.forEach((s, index) => {
 
   sideFeeds.appendChild(div);
 
-  // first one as default main
   if(index === 0) {
     switchMain(s.url, div);
   }
 });
 
-// switch main screen
 function switchMain(url, element) {
-
   mainPlayer.src = url + "?autoplay=1&mute=0";
 
   document.querySelectorAll(".feed").forEach(f => f.classList.remove("active"));
