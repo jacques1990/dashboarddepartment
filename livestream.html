@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Live News Wall</title>
+  <title>Trading War Room</title>
 
   <style>
     body {
@@ -11,19 +11,46 @@
       font-family:Arial;
     }
 
-    .grid {
+    .topbar {
+      padding:10px;
+      background:#111;
+      text-align:center;
+      font-size:18px;
+    }
+
+    .layout {
       display:grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: 2fr 1fr;
+      height:calc(100vh - 50px);
+    }
+
+    /* MAIN SCREEN */
+    .main {
+      position:relative;
+      border-right:2px solid #111;
+    }
+
+    .main iframe {
+      width:100%;
+      height:100%;
+      border:none;
+    }
+
+    /* SIDE GRID */
+    .side {
+      display:grid;
+      grid-template-columns: 1fr;
+      grid-auto-rows: 1fr;
       gap:6px;
-      height:100vh;
       padding:6px;
     }
 
-    .player {
+    .feed {
+      cursor:pointer;
       position:relative;
     }
 
-    iframe {
+    .feed iframe {
       width:100%;
       height:100%;
       border:none;
@@ -38,35 +65,78 @@
       font-size:12px;
       border-radius:4px;
     }
+
+    .active {
+      outline:2px solid red;
+    }
   </style>
 </head>
 
 <body>
 
-<div class="grid">
+<div class="topbar">
+  🔴 Trading War Room
+</div>
 
-  <!-- Al Jazeera -->
-  <div class="player">
-    <div class="label">Al Jazeera</div>
-   <iframe 
-src="https://www.youtube.com/embed/l0tl9g0Jnf0?autoplay=1&mute=1"
-allow="autoplay"
-allowfullscreen>
-</iframe>
+<div class="layout">
+
+  <!-- MAIN SCREEN -->
+  <div class="main">
+    <iframe id="mainPlayer" src=""></iframe>
   </div>
 
-  <!-- Add more like this -->
-  <div class="player">
-    <div class="label">Channel 2</div>
-    <iframe src="PASTE_NEXT_EMBED_LINK?autoplay=1&mute=1"></iframe>
-  </div>
-
-  <div class="player">
-    <div class="label">Channel 3</div>
-    <iframe src="PASTE_NEXT_EMBED_LINK?autoplay=1&mute=1"></iframe>
-  </div>
+  <!-- SIDE FEEDS -->
+  <div class="side" id="sideFeeds"></div>
 
 </div>
+
+<script>
+
+// ✅ Your cleaned embed links
+const streams = [
+  {name:"Stream 1", url:"https://www.youtube.com/embed/Ap-UM1O9RBU"},
+  {name:"Al Jazeera", url:"https://www.youtube.com/embed/l0tl9g0Jnf0"},
+  {name:"Stream 3", url:"https://www.youtube.com/embed/4wExBtPQ-JA"},
+  {name:"Stream 4", url:"https://www.youtube.com/embed/5vfaDsMhCF4"},
+  {name:"Stream 5", url:"https://www.youtube.com/embed/pykpO5kQJ98"},
+  {name:"Stream 6", url:"https://www.youtube.com/embed/gCNeDWCI0vo"},
+  {name:"New Stream", url:"https://www.youtube.com/embed/Mz1NkvRm8O8"}
+];
+
+const mainPlayer = document.getElementById("mainPlayer");
+const sideFeeds = document.getElementById("sideFeeds");
+
+// load side feeds
+streams.forEach((s, index) => {
+
+  const div = document.createElement("div");
+  div.className = "feed";
+
+  div.innerHTML = `
+    <div class="label">${s.name}</div>
+    <iframe src="${s.url}?autoplay=1&mute=1"></iframe>
+  `;
+
+  div.onclick = () => switchMain(s.url, div);
+
+  sideFeeds.appendChild(div);
+
+  // first one as default main
+  if(index === 0) {
+    switchMain(s.url, div);
+  }
+});
+
+// switch main screen
+function switchMain(url, element) {
+
+  mainPlayer.src = url + "?autoplay=1&mute=0";
+
+  document.querySelectorAll(".feed").forEach(f => f.classList.remove("active"));
+  element.classList.add("active");
+}
+
+</script>
 
 </body>
 </html>
