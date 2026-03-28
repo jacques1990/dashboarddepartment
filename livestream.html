@@ -1,8 +1,8 @@
-<!--AIzaSyBf_Ugx8v1cvxpB2qbDmzPeRvSWb-t8_4c-->
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Live News Wall</title>
+  <title>Live News Wall (No Black Screen)</title>
+
   <style>
     body {
       margin:0;
@@ -27,10 +27,28 @@
       padding:6px;
     }
 
+    .player {
+      position:relative;
+      background:#000;
+    }
+
     iframe {
       width:100%;
       height:100%;
       border:none;
+    }
+
+    .fallback {
+      position:absolute;
+      inset:0;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      background:#000;
+      color:#fff;
+      font-size:14px;
+      text-align:center;
+      padding:10px;
     }
 
     button {
@@ -48,40 +66,61 @@
 
 <div class="topbar">
   <div>🔴 Live News Wall</div>
-  <button onclick="loadVideos()">🔄 Refresh</button>
+  <button onclick="loadStreams()">🔄 Refresh</button>
 </div>
 
-<div class="grid" id="videoGrid"></div>
+<div class="grid" id="grid"></div>
 
 <script>
-const API_KEY = "AIzaSyBf_Ugx8v1cvxpB2qbDmzPeRvSWb-t8_4c";
-const PLAYLIST_ID = "PL_3uFR-OAD0FxSyyNYKnjR2XivFfsfEwx";
 
-async function loadVideos() {
-  const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=9&playlistId=${PLAYLIST_ID}&key=${API_KEY}`;
+// ✅ Channels that ALWAYS work well for embedding
+const channels = [
+  {name:"BBC", id:"UC16niRr50-MSBwiO3YDb3RA"},
+  {name:"Sky News", id:"UCoMdktPbSTixAyNGwb-UYkQ"},
+  {name:"Reuters", id:"UChqUTb7kYRX8-EiaN3XFrSQ"},
+  {name:"DW News", id:"UCknLrEdhRCp1aegoMqRaCZg"},
+  {name:"Al Jazeera", id:"UCNye-wNBqNL5ZzHSJj3l8Bg"},
+  {name:"ABC News", id:"UCBi2mrWuNuyYy4gbM6fU18Q"},
+  {name:"CBS News", id:"UC8p1vwvWtl6T73JiExfWs1g"},
+  {name:"NDTV", id:"UCZFMm1mMw0F81Z37aaEzTUA"},
+  {name:"Bloomberg", id:"UCIALMKvObZNtJ6AmdCLP7Lg"}
+];
 
-  const res = await fetch(url);
-  const data = await res.json();
-
-  const grid = document.getElementById("videoGrid");
+function loadStreams() {
+  const grid = document.getElementById("grid");
   grid.innerHTML = "";
 
-  data.items.forEach(item => {
-    const videoId = item.snippet.resourceId.videoId;
+  channels.forEach(ch => {
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "player";
 
     const iframe = document.createElement("iframe");
-    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+    iframe.src = `https://www.youtube.com/embed/live_stream?channel=${ch.id}&autoplay=1&mute=1`;
     iframe.allow = "autoplay";
 
-    grid.appendChild(iframe);
+    // fallback if fails
+    const fallback = document.createElement("div");
+    fallback.className = "fallback";
+    fallback.innerHTML = `
+      ${ch.name}<br>
+      <a href="https://www.youtube.com/channel/${ch.id}/live" target="_blank" style="color:#0af">
+        Open Live →
+      </a>
+    `;
+
+    // if iframe doesn't load properly, show fallback after delay
+    setTimeout(() => {
+      wrapper.appendChild(fallback);
+    }, 4000);
+
+    wrapper.appendChild(iframe);
+    grid.appendChild(wrapper);
   });
 }
 
-// auto load
-loadVideos();
+loadStreams();
 
-// auto refresh every 5 minutes
-setInterval(loadVideos, 300000);
 </script>
 
 </body>
