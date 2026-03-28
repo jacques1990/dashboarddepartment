@@ -1,7 +1,8 @@
+
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Trading War Room (Resizable)</title>
+  <title>Trading War Room (Smart Resize)</title>
 
   <style>
     body {
@@ -16,7 +17,6 @@
       padding:10px;
       background:#111;
       text-align:center;
-      font-size:18px;
     }
 
     .container {
@@ -25,11 +25,9 @@
       width:100%;
     }
 
-    /* MAIN PANEL */
     .main {
       width:60%;
       min-width:200px;
-      position:relative;
     }
 
     .main iframe {
@@ -38,7 +36,6 @@
       border:none;
     }
 
-    /* RESIZER BAR */
     .resizer {
       width:6px;
       background:#222;
@@ -49,11 +46,10 @@
       background:red;
     }
 
-    /* SIDE PANEL */
+    /* 🔥 SIDE PANEL SMART */
     .side {
       flex:1;
       display:grid;
-      grid-template-columns: repeat(2, 1fr);
       gap:8px;
       padding:8px;
     }
@@ -74,7 +70,7 @@
       top:6px;
       left:6px;
       background:rgba(0,0,0,0.7);
-      padding:5px 8px;
+      padding:4px 8px;
       font-size:12px;
       border-radius:4px;
     }
@@ -87,27 +83,21 @@
 
 <body>
 
-<div class="topbar">
-  🔴 Trading War Room (Drag Divider to Resize)
-</div>
+<div class="topbar">🔴 Trading War Room</div>
 
 <div class="container">
 
-  <!-- MAIN -->
   <div class="main" id="mainPanel">
     <iframe id="mainPlayer"></iframe>
   </div>
 
-  <!-- RESIZER -->
   <div class="resizer" id="resizer"></div>
 
-  <!-- SIDE -->
   <div class="side" id="sideFeeds"></div>
 
 </div>
 
 <script>
-
 const streams = [
   {name:"Stream 1", url:"https://www.youtube.com/embed/Ap-UM1O9RBU"},
   {name:"Al Jazeera", url:"https://www.youtube.com/embed/l0tl9g0Jnf0"},
@@ -121,12 +111,12 @@ const streams = [
 
   
 ];
-
 const mainPlayer = document.getElementById("mainPlayer");
 const sideFeeds = document.getElementById("sideFeeds");
+const mainPanel = document.getElementById("mainPanel");
 
+// 🔥 CREATE FEEDS
 streams.forEach((s, index) => {
-
   const div = document.createElement("div");
   div.className = "feed";
 
@@ -144,6 +134,7 @@ streams.forEach((s, index) => {
   }
 });
 
+// 🔥 SWITCH MAIN
 function switchMain(url, element) {
   mainPlayer.src = url + "?autoplay=1&mute=0";
 
@@ -151,10 +142,21 @@ function switchMain(url, element) {
   element.classList.add("active");
 }
 
-/* 🔥 DRAG RESIZE LOGIC */
-const resizer = document.getElementById("resizer");
-const mainPanel = document.getElementById("mainPanel");
+// 🔥 SMART GRID ADJUSTMENT
+function updateLayout() {
+  const sideWidth = window.innerWidth - mainPanel.offsetWidth;
 
+  if (sideWidth < 400) {
+    sideFeeds.style.gridTemplateColumns = "1fr";
+  } else if (sideWidth < 800) {
+    sideFeeds.style.gridTemplateColumns = "repeat(2, 1fr)";
+  } else {
+    sideFeeds.style.gridTemplateColumns = "repeat(3, 1fr)";
+  }
+}
+
+// 🔥 DRAG RESIZE
+const resizer = document.getElementById("resizer");
 let isDragging = false;
 
 resizer.addEventListener("mousedown", () => {
@@ -168,6 +170,7 @@ document.addEventListener("mousemove", (e) => {
 
   if (newWidth > 20 && newWidth < 80) {
     mainPanel.style.width = newWidth + "%";
+    updateLayout(); // 🔥 KEY PART
   }
 });
 
@@ -175,7 +178,11 @@ document.addEventListener("mouseup", () => {
   isDragging = false;
 });
 
+// initial
+updateLayout();
+
 </script>
 
 </body>
 </html>
+
