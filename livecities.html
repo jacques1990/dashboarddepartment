@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Trading War Room (Resizable)</title>
+
+  <style>
+    body {
+      margin:0;
+      background:#000;
+      color:white;
+      font-family:Arial;
+      overflow:hidden;
+    }
+
+    .topbar {
+      padding:10px;
+      background:#111;
+      text-align:center;
+      font-size:18px;
+    }
+
+    .container {
+      display:flex;
+      height:calc(100vh - 50px);
+      width:100%;
+    }
+
+    /* MAIN PANEL */
+    .main {
+      width:60%;
+      min-width:200px;
+      position:relative;
+    }
+
+    .main iframe {
+      width:100%;
+      height:100%;
+      border:none;
+    }
+
+    /* RESIZER BAR */
+    .resizer {
+      width:6px;
+      background:#222;
+      cursor:col-resize;
+    }
+
+    .resizer:hover {
+      background:red;
+    }
+
+    /* SIDE PANEL */
+    .side {
+      flex:1;
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:8px;
+      padding:8px;
+    }
+
+    .feed {
+      position:relative;
+      cursor:pointer;
+    }
+
+    .feed iframe {
+      width:100%;
+      height:100%;
+      border:none;
+    }
+
+    .label {
+      position:absolute;
+      top:6px;
+      left:6px;
+      background:rgba(0,0,0,0.7);
+      padding:5px 8px;
+      font-size:12px;
+      border-radius:4px;
+    }
+
+    .active {
+      outline:2px solid red;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="topbar">
+  🔴 Trading War Room (Drag Divider to Resize)
+</div>
+
+<div class="container">
+
+  <!-- MAIN -->
+  <div class="main" id="mainPanel">
+    <iframe id="mainPlayer"></iframe>
+  </div>
+
+  <!-- RESIZER -->
+  <div class="resizer" id="resizer"></div>
+
+  <!-- SIDE -->
+  <div class="side" id="sideFeeds"></div>
+
+</div>
+
+<script>
+
+const streams = [
+  {name:"Stream 1", url:"https://www.youtube.com/embed/EA40k4tmYis"},
+  {name:"Al Jazeera", url:"https://www.youtube.com/embed/Q8-yLvxaIAc"},
+  {name:"Stream 3", url:"https://www.youtube.com/embed/rnXIjl_Rzy4"},
+  //{name:"Stream 4", url:"https://www.youtube.com/embed/5vfaDsMhCF4"},
+ // {name:"Stream 5", url:"https://www.youtube.com/embed/pykpO5kQJ98"},
+ // {name:"Stream 6", url:"https://www.youtube.com/embed/gCNeDWCI0vo"},
+ // {name:"New Stream", url:"https://www.youtube.com/embed/Mz1NkvRm8O8"},
+ // {name:"New Stream", url:"https://www.youtube.com/embed/iEpJwprxDdk"},
+  //{name:"New Stream", url:"https://www.youtube.com/embed/pwN9wCZnhs0"},
+
+  
+];
+
+const mainPlayer = document.getElementById("mainPlayer");
+const sideFeeds = document.getElementById("sideFeeds");
+
+streams.forEach((s, index) => {
+
+  const div = document.createElement("div");
+  div.className = "feed";
+
+  div.innerHTML = `
+    <div class="label">${s.name}</div>
+    <iframe src="${s.url}?autoplay=1&mute=1"></iframe>
+  `;
+
+  div.onclick = () => switchMain(s.url, div);
+
+  sideFeeds.appendChild(div);
+
+  if(index === 0) {
+    switchMain(s.url, div);
+  }
+});
+
+function switchMain(url, element) {
+  mainPlayer.src = url + "?autoplay=1&mute=0";
+
+  document.querySelectorAll(".feed").forEach(f => f.classList.remove("active"));
+  element.classList.add("active");
+}
+
+/* 🔥 DRAG RESIZE LOGIC */
+const resizer = document.getElementById("resizer");
+const mainPanel = document.getElementById("mainPanel");
+
+let isDragging = false;
+
+resizer.addEventListener("mousedown", () => {
+  isDragging = true;
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+
+  let newWidth = (e.clientX / window.innerWidth) * 100;
+
+  if (newWidth > 20 && newWidth < 80) {
+    mainPanel.style.width = newWidth + "%";
+  }
+});
+
+document.addEventListener("mouseup", () => {
+  isDragging = false;
+});
+
+</script>
+
+</body>
+</html>
