@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Live News Wall (No Black Screen)</title>
+  <title>Live News Wall</title>
 
   <style>
     body {
@@ -27,37 +27,25 @@
       padding:6px;
     }
 
-    .player {
-      position:relative;
-      background:#000;
-    }
-
     iframe {
       width:100%;
       height:100%;
       border:none;
-    }
-
-    .fallback {
-      position:absolute;
-      inset:0;
-      display:flex;
-      justify-content:center;
-      align-items:center;
       background:#000;
-      color:#fff;
-      font-size:14px;
-      text-align:center;
-      padding:10px;
     }
 
-    button {
-      background:#ff0000;
-      color:white;
-      border:none;
-      padding:6px 12px;
-      cursor:pointer;
-      border-radius:6px;
+    .player {
+      position:relative;
+    }
+
+    .label {
+      position:absolute;
+      top:5px;
+      left:5px;
+      background:rgba(0,0,0,0.6);
+      padding:3px 6px;
+      font-size:12px;
+      border-radius:4px;
     }
   </style>
 </head>
@@ -66,62 +54,42 @@
 
 <div class="topbar">
   <div>🔴 Live News Wall</div>
-  <button onclick="loadStreams()">🔄 Refresh</button>
 </div>
 
-<div class="grid" id="grid"></div>
+<div class="grid">
 
-<script>
+  <!-- Example Players -->
+  <div class="player">
+    <div class="label">Channel 1</div>
+    <iframe src="<iframe width="560" height="315" src="https://www.youtube.com/embed/l0tl9g0Jnf0?si=znUikWQuiqEmfnz3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>?autoplay=1&mute=1" allow="autoplay"></iframe>
+  </div>
 
-// ✅ Channels that ALWAYS work well for embedding
-const channels = [
-  {name:"BBC", id:"UC16niRr50-MSBwiO3YDb3RA"},
-  {name:"Sky News", id:"UCoMdktPbSTixAyNGwb-UYkQ"},
-  {name:"Reuters", id:"UChqUTb7kYRX8-EiaN3XFrSQ"},
-  {name:"DW News", id:"UCknLrEdhRCp1aegoMqRaCZg"},
-  {name:"Al Jazeera", id:"UCNye-wNBqNL5ZzHSJj3l8Bg"},
-  {name:"ABC News", id:"UCBi2mrWuNuyYy4gbM6fU18Q"},
-  {name:"CBS News", id:"UC8p1vwvWtl6T73JiExfWs1g"},
-  {name:"NDTV", id:"UCZFMm1mMw0F81Z37aaEzTUA"},
-  {name:"Bloomberg", id:"UCIALMKvObZNtJ6AmdCLP7Lg"}
-];
+  <div class="player">
+    <div class="label">Channel 2</div>
+    <iframe src="EMBED_LINK_2?autoplay=1&mute=1" allow="autoplay"></iframe>
+  </div>
 
-function loadStreams() {
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
+  <div class="player">
+    <div class="label">Channel 3</div>
+    <iframe src="EMBED_LINK_3?autoplay=1&mute=1" allow="autoplay"></iframe>
+  </div>
 
-  channels.forEach(ch => {
+  <div class="player">
+    <div class="label">Channel 4</div>
+    <iframe src="EMBED_LINK_4?autoplay=1&mute=1" allow="autoplay"></iframe>
+  </div>
 
-    const wrapper = document.createElement("div");
-    wrapper.className = "player";
+  <div class="player">
+    <div class="label">Channel 5</div>
+    <iframe src="EMBED_LINK_5?autoplay=1&mute=1" allow="autoplay"></iframe>
+  </div>
 
-    const iframe = document.createElement("iframe");
-    iframe.src = `https://www.youtube.com/embed/live_stream?channel=${ch.id}&autoplay=1&mute=1`;
-    iframe.allow = "autoplay";
+  <div class="player">
+    <div class="label">Channel 6</div>
+    <iframe src="EMBED_LINK_6?autoplay=1&mute=1" allow="autoplay"></iframe>
+  </div>
 
-    // fallback if fails
-    const fallback = document.createElement("div");
-    fallback.className = "fallback";
-    fallback.innerHTML = `
-      ${ch.name}<br>
-      <a href="https://www.youtube.com/channel/${ch.id}/live" target="_blank" style="color:#0af">
-        Open Live →
-      </a>
-    `;
-
-    // if iframe doesn't load properly, show fallback after delay
-    setTimeout(() => {
-      wrapper.appendChild(fallback);
-    }, 4000);
-
-    wrapper.appendChild(iframe);
-    grid.appendChild(wrapper);
-  });
-}
-
-loadStreams();
-
-</script>
+</div>
 
 </body>
 </html>
