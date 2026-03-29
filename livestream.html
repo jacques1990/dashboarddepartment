@@ -181,6 +181,57 @@ document.addEventListener("mouseup", () => {
 
 // initial
 updateLayout();
+  // ⌨️ KEYBOARD SHORTCUTS
+
+document.addEventListener("keydown", (e) => {
+
+  const key = e.key;
+
+  // 🔢 Switch feeds (1–7)
+  if (key >= 1 && key <= streams.length) {
+    const index = key - 1;
+    const feed = document.querySelectorAll(".feed")[index];
+    if (feed) {
+      switchMain(streams[index].url, feed);
+    }
+  }
+
+  // 🔇 Toggle mute
+  if (key === "m" || key === "M") {
+    let src = mainPlayer.src;
+
+    if (src.includes("mute=1")) {
+      mainPlayer.src = src.replace("mute=1", "mute=0");
+    } else {
+      mainPlayer.src = src.replace("mute=0", "mute=1");
+    }
+  }
+
+  // 🔲 Fullscreen
+  if (key === "f" || key === "F") {
+    if (mainPlayer.requestFullscreen) {
+      mainPlayer.requestFullscreen();
+    }
+  }
+
+  // ⬅️➡️ Resize without mouse
+  if (key === "ArrowLeft" || key === "ArrowRight") {
+
+    let currentWidth = mainPanel.offsetWidth;
+    let total = window.innerWidth;
+
+    let percent = (currentWidth / total) * 100;
+
+    if (key === "ArrowLeft") percent -= 5;
+    if (key === "ArrowRight") percent += 5;
+
+    if (percent > 20 && percent < 80) {
+      mainPanel.style.width = percent + "%";
+      updateLayout();
+    }
+  }
+
+});
 
 </script>
 
