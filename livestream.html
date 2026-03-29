@@ -187,17 +187,22 @@ document.addEventListener("keydown", (e) => {
 
   const key = e.key;
 
-  // 🔢 Switch feeds (1–7)
-  if (key >= 1 && key <= streams.length) {
-    const index = key - 1;
-    const feed = document.querySelectorAll(".feed")[index];
-    if (feed) {
-      switchMain(streams[index].url, feed);
+  // 🔢 FIXED: number key handling
+  if (!isNaN(key)) {
+    const index = parseInt(key) - 1;
+
+    if (index >= 0 && index < streams.length) {
+      const feeds = document.querySelectorAll(".feed");
+      const feed = feeds[index];
+
+      if (feed) {
+        switchMain(streams[index].url, feed);
+      }
     }
   }
 
   // 🔇 Toggle mute
-  if (key === "m" || key === "M") {
+  if (key.toLowerCase() === "m") {
     let src = mainPlayer.src;
 
     if (src.includes("mute=1")) {
@@ -208,13 +213,13 @@ document.addEventListener("keydown", (e) => {
   }
 
   // 🔲 Fullscreen
-  if (key === "f" || key === "F") {
+  if (key.toLowerCase() === "f") {
     if (mainPlayer.requestFullscreen) {
       mainPlayer.requestFullscreen();
     }
   }
 
-  // ⬅️➡️ Resize without mouse
+  // ⬅️➡️ Resize
   if (key === "ArrowLeft" || key === "ArrowRight") {
 
     let currentWidth = mainPanel.offsetWidth;
