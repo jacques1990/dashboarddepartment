@@ -1,245 +1,658 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Trading War Room (Smart Resize)</title>
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>War Room Pro</title>
   <style>
-    body {
-      margin:0;
-      background:#000;
-      color:white;
-      font-family:Arial;
-      overflow:hidden;
+    :root{
+      --bg:#050505;
+      --panel:#111;
+      --panel2:#181818;
+      --line:#2b2b2b;
+      --text:#f5f5f5;
+      --muted:#b7b7b7;
+      --accent:#e11d48;
+      --accent2:#2563eb;
+      --green:#16a34a;
+      --sidebarWidth: 38%;
+      --feedHeight: 240px;
     }
 
-    .topbar {
-      padding:10px;
-      background:#111;
-      text-align:center;
+    *{ box-sizing:border-box; }
+    html,body{ margin:0; background:var(--bg); color:var(--text); font-family:Arial, Helvetica, sans-serif; }
+    body{
+      overflow:auto;
+      min-width: 1100px;
+      min-height:100vh;
     }
 
-    .container {
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:30;
+      background:#0c0c0c;
+      border-bottom:1px solid var(--line);
+      padding:10px 14px;
       display:flex;
-      height:calc(100vh - 50px);
-      width:100%;
+      flex-wrap:wrap;
+      align-items:center;
+      gap:10px;
     }
 
-    .main {
-      width:60%;
-      min-width:200px;
+    .title{
+      font-weight:700;
+      font-size:18px;
+      margin-right:auto;
+      letter-spacing:.2px;
     }
 
-    .main iframe {
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+
+    button, select{
+      background:var(--panel2);
+      color:var(--text);
+      border:1px solid #333;
+      border-radius:8px;
+      padding:8px 10px;
+      font-size:14px;
+    }
+
+    button{
+      cursor:pointer;
+    }
+    button:hover, select:hover{
+      border-color:#555;
+    }
+
+    .layout{
+      display:flex;
+      align-items:stretch;
+      min-height: calc(100vh - 62px);
+      width:max-content;
+      min-width:100%;
+    }
+
+    .main-panel{
+      width: calc(100vw - var(--sidebarWidth));
+      min-width:420px;
+      background:#000;
+      position:sticky;
+      left:0;
+      top:62px;
+      height: calc(100vh - 62px);
+      border-right:1px solid var(--line);
+      display:flex;
+      flex-direction:column;
+    }
+
+    .main-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding:8px 10px;
+      background:#0d0d0d;
+      border-bottom:1px solid var(--line);
+      font-size:14px;
+    }
+
+    .main-player-wrap{
+      flex:1;
+      position:relative;
+      background:#000;
+    }
+
+    .main-player-wrap iframe{
       width:100%;
       height:100%;
-      border:none;
+      border:0;
+      background:#000;
     }
 
-    .resizer {
-      width:6px;
-      background:#222;
+    .resizer{
+      width:8px;
       cursor:col-resize;
+      background:#1a1a1a;
+      border-right:1px solid #000;
+      border-left:1px solid #000;
+      flex:0 0 8px;
+    }
+    .resizer:hover, .resizer.dragging{
+      background:var(--accent);
     }
 
-    .resizer:hover {
-      background:red;
+    .side-panel{
+      width: var(--sidebarWidth);
+      min-width:450px;
+      background:#0a0a0a;
+      padding:12px;
+      overflow:auto;
     }
 
-    /* 🔥 SIDE PANEL SMART */
-    .side {
-      flex:1;
-      display:grid;
+    .preset-bar{
+      display:flex;
       gap:8px;
-      padding:8px;
+      flex-wrap:wrap;
+      margin-bottom:12px;
     }
 
-    .feed {
+    .selected-strip{
+      margin-bottom:12px;
+      padding:10px;
+      background:#0f0f0f;
+      border:1px solid var(--line);
+      border-radius:10px;
+    }
+
+    .selected-strip h3{
+      margin:0 0 8px 0;
+      font-size:14px;
+    }
+
+    .selected-list{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:8px;
+    }
+
+    .selected-chip{
+      border:1px solid #333;
+      background:#171717;
+      border-radius:8px;
+      padding:8px;
+      font-size:13px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+    }
+
+    .stream-grid{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(280px, 1fr));
+      gap:12px;
+      width:max-content;
+      min-width:100%;
+    }
+
+    .stream-card{
+      width:100%;
+      min-width:280px;
+      background:#101010;
+      border:1px solid var(--line);
+      border-radius:12px;
+      overflow:hidden;
+      box-shadow:0 0 0 1px rgba(255,255,255,.02) inset;
+    }
+
+    .stream-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      background:#151515;
+      border-bottom:1px solid var(--line);
+    }
+
+    .stream-name{
+      font-size:13px;
+      font-weight:700;
+      line-height:1.2;
+    }
+
+    .actions{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+    }
+
+    .actions button{
+      font-size:12px;
+      padding:6px 8px;
+      border-radius:7px;
+    }
+
+    .stream-frame{
       position:relative;
+      height:var(--feedHeight);
+      background:#000;
+    }
+
+    .stream-frame iframe{
+      width:100%;
+      height:100%;
+      border:0;
+      background:#000;
+    }
+
+    .check-row{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px 10px;
+      border-top:1px solid var(--line);
+      font-size:13px;
+    }
+
+    input[type="checkbox"]{
+      transform:scale(1.15);
       cursor:pointer;
     }
 
-    .feed iframe {
-      width:100%;
-      height:100%;
-      border:none;
-    }
-
-    .label {
-      position:absolute;
-      top:6px;
-      left:6px;
-      background:rgba(0,0,0,0.7);
-      padding:4px 8px;
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
       font-size:12px;
-      border-radius:4px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid #333;
+      background:#111;
+      color:var(--muted);
     }
 
-    .active {
-      outline:2px solid red;
+    .pill.live{ color:#fff; border-color:#4b1d25; background:#2a0f14; }
+    .pill.saved{ color:#dbeafe; border-color:#1d4ed8; background:#102147; }
+
+    .status{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .hint{
+      padding:10px 12px;
+      font-size:12px;
+      color:var(--muted);
+      border-top:1px solid var(--line);
+      background:#0d0d0d;
+    }
+
+    .full-btn{ background:#1d4ed8; }
+    .danger{ background:#7f1d1d; }
+    .good{ background:#14532d; }
+
+    @media (max-width: 1300px){
+      .stream-grid{
+        grid-template-columns: 1fr;
+        width:100%;
+      }
+      .side-panel{
+        min-width:360px;
+      }
+      .selected-list{
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
-
 <body>
-
-<div class="topbar">🔴 JACQ LIVE STREAM /div>
-
-<div class="container">
-
-  <div class="main" id="mainPanel">
-    <iframe id="mainPlayer"></iframe>
+  <div class="topbar">
+    <div class="title">🔴 JACQ Trading War Room Pro</div>
+    <button onclick="loadSplit()">4 Split Screen</button>
+    <div class="controls">
+      <button id="showAllBtn">All Feeds</button>
+      <button id="fourScreenBtn" class="good">4 Screen Mode</button>
+      <button id="savePresetBtn">Save Favorite 4</button>
+      <button id="loadPresetBtn">Trading Preset</button>
+      <button id="clearPresetBtn" class="danger">Clear Preset</button>
+      <label class="pill">Columns
+        <select id="columnSelect">
+          <option value="1">1</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+        </select>
+      </label>
+    </div>
   </div>
 
-  <div class="resizer" id="resizer"></div>
+  <div class="layout">
+    <div class="main-panel" id="mainPanel">
+      <div class="main-header">
+        <div>
+          <strong id="mainTitle">Main Feed</strong>
+          <div class="status" id="mainStatus">Click any side feed to focus it here.</div>
+        </div>
+        <div class="actions">
+          <button id="muteToggle">Mute / Unmute</button>
+          <button id="fullscreenMain" class="full-btn">Fullscreen</button>
+        </div>
+      </div>
+      <div class="main-player-wrap">
+        <iframe id="mainPlayer" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class="hint">
+        Drag the divider to resize. Scroll vertically or horizontally if needed. Pick any 4 streams with the checkboxes, then use <strong>4 Screen Mode</strong>. Save them with <strong>Save Favorite 4</strong>, then reopen instantly with <strong>Trading Preset</strong>.
+      </div>
+    </div>
 
-  <div class="side" id="sideFeeds"></div>
+    <div class="resizer" id="resizer" title="Drag to resize"></div>
 
-</div>
+    <div class="side-panel" id="sidePanel">
+      <div class="preset-bar">
+        <span class="pill live">Live wall</span>
+        <span class="pill saved">Preset ready for 4-screen mode</span>
+      </div>
 
-<script>
-const streams = [
-  {name:"Euro news", url:"https://www.youtube.com/embed/Ap-UM1O9RBU"},
-  {name:"weather network", url:"https://www.youtube.com/embed/l0tl9g0Jnf0"},
-  {name:"asianet news", url:"https://www.youtube.com/embed/4wExBtPQ-JA"},
-  {name:"cbc news", url:"https://www.youtube.com/embed/5vfaDsMhCF4"},
-  {name:"french news", url:"https://www.youtube.com/embed/pykpO5kQJ98"},
-  {name:"al jazeera", url:"https://www.youtube.com/embed/gCNeDWCI0vo"},
-  {name:"fox news live", url:"https://www.youtube.com/embed/C96oohpWBGw"},
-  {name:"bloomberg", url:"https://www.youtube.com/embed/iEpJwprxDdk"},
-  {name:"Ndtv", url:"https://www.youtube.com/embed/44OkuNBFNXc"},
-  {name:"agenda free tv", url:"https://www.youtube.com/embed/Tf_UjBMIzNo"},//agenda free tv stream
-  
-  
-];
-const mainPlayer = document.getElementById("mainPlayer");
-const sideFeeds = document.getElementById("sideFeeds");
-const mainPanel = document.getElementById("mainPanel");
+      <div class="selected-strip">
+        <h3>Selected for 4 Screen Mode</h3>
+        <div class="selected-list" id="selectedList"></div>
+      </div>
 
-// 🔥 CREATE FEEDS
-streams.forEach((s, index) => {
-  const div = document.createElement("div");
-  div.className = "feed";
+      <div class="stream-grid" id="streamGrid"></div>
+    </div>
+  </div>
 
-  div.innerHTML = `
-    <div class="label">${s.name}</div>
-    <iframe src="${s.url}?autoplay=1&mute=1"></iframe>
-  `;
+  <script>
+    const streams = [
+      {name:"Euro News", url:"https://www.youtube.com/embed/Ap-UM1O9RBU"},
+      {name:"Weather Network", url:"https://www.youtube.com/embed/l0tl9g0Jnf0"},
+      {name:"Asianet News", url:"https://www.youtube.com/embed/4wExBtPQ-JA"},
+      {name:"CBC News", url:"https://www.youtube.com/embed/5vfaDsMhCF4"},
+      {name:"French News", url:"https://www.youtube.com/embed/pykpO5kQJ98"},
+      {name:"Al Jazeera", url:"https://www.youtube.com/embed/gCNeDWCI0vo"},
+      {name:"Fox News Live", url:"https://www.youtube.com/embed/C96oohpWBGw"},
+      {name:"Bloomberg", url:"https://www.youtube.com/embed/iEpJwprxDdk"},
+      {name:"NDTV", url:"https://www.youtube.com/embed/44OkuNBFNXc"},
+      {name:"Agenda Free TV", url:"https://www.youtube.com/embed/Tf_UjBMIzNo"}
+    ];
 
-  div.onclick = () => switchMain(s.url, div);
+    const FAVORITE_KEY = "jacq.favoriteFourStreams.v1";
 
-  sideFeeds.appendChild(div);
+    const streamGrid = document.getElementById("streamGrid");
+    const selectedList = document.getElementById("selectedList");
+    const mainPlayer = document.getElementById("mainPlayer");
+    const mainTitle = document.getElementById("mainTitle");
+    const mainStatus = document.getElementById("mainStatus");
+    const columnSelect = document.getElementById("columnSelect");
 
-  if(index === 0) {
-    switchMain(s.url, div);
-  }
-});
+    let selectedIndexes = [];
+    let currentMainIndex = 0;
+    let mainMuted = false;
 
-// 🔥 SWITCH MAIN
-function switchMain(url, element) {
-  mainPlayer.src = url + "?autoplay=1&mute=0";
+    function withParams(baseUrl, mute = true){
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      return `${baseUrl}${separator}autoplay=1&mute=${mute ? 1 : 0}`;
+    }
 
-  document.querySelectorAll(".feed").forEach(f => f.classList.remove("active"));
-  element.classList.add("active");
-}
+    function openMain(index, unmute = true){
+      currentMainIndex = index;
+      const s = streams[index];
+      mainTitle.textContent = s.name;
+      mainStatus.textContent = `Focused on ${s.name}`;
+      mainPlayer.src = withParams(s.url, !unmute ? true : false);
+      mainMuted = !unmute ? true : false;
+      updateActiveCards();
+    }
 
-// 🔥 SMART GRID ADJUSTMENT
-function updateLayout() {
-  const sideWidth = window.innerWidth - mainPanel.offsetWidth;
+    function updateActiveCards(){
+      document.querySelectorAll(".stream-card").forEach((card, idx) => {
+        card.style.outline = idx === currentMainIndex ? "2px solid #e11d48" : "none";
+      });
+    }
 
-  if (sideWidth < 400) {
-    sideFeeds.style.gridTemplateColumns = "1fr";
-  } else if (sideWidth < 800) {
-    sideFeeds.style.gridTemplateColumns = "repeat(2, 1fr)";
-  } else {
-    sideFeeds.style.gridTemplateColumns = "repeat(3, 1fr)";
-  }
-}
+    function renderSelectedList(){
+      selectedList.innerHTML = "";
+      if (selectedIndexes.length === 0){
+        selectedList.innerHTML = '<div class="selected-chip">No streams selected yet.</div>';
+        return;
+      }
+      selectedIndexes.forEach((idx, position) => {
+        const chip = document.createElement("div");
+        chip.className = "selected-chip";
+        chip.innerHTML = `
+          <span>${position + 1}. ${streams[idx].name}</span>
+          <button data-remove="${idx}">Remove</button>
+        `;
+        selectedList.appendChild(chip);
+      });
 
-// 🔥 DRAG RESIZE
-const resizer = document.getElementById("resizer");
-let isDragging = false;
+      selectedList.querySelectorAll("button[data-remove]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.remove);
+          selectedIndexes = selectedIndexes.filter(v => v !== idx);
+          syncCheckboxes();
+          renderSelectedList();
+        });
+      });
+    }
 
-resizer.addEventListener("mousedown", () => {
-  isDragging = true;
-});
+    function toggleSelection(index, checked){
+      if (checked){
+        if (!selectedIndexes.includes(index)){
+          if (selectedIndexes.length >= 4){
+            alert("You can only select 4 streams for 4 Screen Mode.");
+            return false;
+          }
+          selectedIndexes.push(index);
+        }
+      } else {
+        selectedIndexes = selectedIndexes.filter(v => v !== index);
+      }
+      renderSelectedList();
+      return true;
+    }
 
-document.addEventListener("mousemove", (e) => {
-  if (!isDragging) return;
+    function syncCheckboxes(){
+      document.querySelectorAll(".pick-stream").forEach(box => {
+        box.checked = selectedIndexes.includes(Number(box.dataset.index));
+      });
+    }
 
-  let newWidth = (e.clientX / window.innerWidth) * 100;
+    function buildCard(stream, index){
+      const card = document.createElement("div");
+      card.className = "stream-card";
+      card.innerHTML = `
+        <div class="stream-top">
+          <div class="stream-name">${stream.name}</div>
+          <div class="actions">
+            <button class="focus-btn" data-index="${index}">Focus</button>
+            <button class="solo-btn" data-index="${index}">Fullscreen</button>
+          </div>
+        </div>
+        <div class="stream-frame">
+          <iframe src="${withParams(stream.url, true)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="check-row">
+          <input type="checkbox" class="pick-stream" data-index="${index}">
+          <label>Select for 4-screen preset</label>
+        </div>
+      `;
+      return card;
+    }
 
-  if (newWidth > 20 && newWidth < 80) {
-    mainPanel.style.width = newWidth + "%";
-    updateLayout(); // 🔥 KEY PART
-  }
-});
+    function renderGrid(indexes = streams.map((_, i) => i), columns = Number(columnSelect.value || 2), mode = "all"){
+      streamGrid.innerHTML = "";
+      streamGrid.style.gridTemplateColumns = `repeat(${columns}, minmax(280px, 1fr))`;
 
-document.addEventListener("mouseup", () => {
-  isDragging = false;
-});
+      indexes.forEach(i => {
+        const card = buildCard(streams[i], i);
+        if (mode === "four"){
+          const frame = card.querySelector(".stream-frame");
+          frame.style.height = "300px";
+        }
+        streamGrid.appendChild(card);
+      });
 
-// initial
-updateLayout();
-  // ⌨️ KEYBOARD SHORTCUTS
+      streamGrid.querySelectorAll(".focus-btn").forEach(btn => {
+        btn.addEventListener("click", () => openMain(Number(btn.dataset.index), true));
+      });
 
-document.addEventListener("keydown", (e) => {
+      streamGrid.querySelectorAll(".solo-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          openMain(Number(btn.dataset.index), true);
+          requestFullscreenForMain();
+        });
+      });
 
-  const key = e.key;
+      streamGrid.querySelectorAll(".pick-stream").forEach(box => {
+        const idx = Number(box.dataset.index);
+        box.checked = selectedIndexes.includes(idx);
+        box.addEventListener("change", (e) => {
+          const ok = toggleSelection(idx, e.target.checked);
+          if (!ok) e.target.checked = false;
+        });
+      });
 
-  // 🔢 FIXED: number key handling
-  if (!isNaN(key)) {
-    const index = parseInt(key) - 1;
+      updateActiveCards();
+    }
 
-    if (index >= 0 && index < streams.length) {
-      const feeds = document.querySelectorAll(".feed");
-      const feed = feeds[index];
+    function showAllFeeds(){
+      renderGrid(streams.map((_, i) => i), Number(columnSelect.value || 2), "all");
+    }
 
-      if (feed) {
-        switchMain(streams[index].url, feed);
+    function fourScreenMode(indexes = selectedIndexes){
+      if (indexes.length !== 4){
+        alert("Select exactly 4 streams using the checkboxes first.");
+        return;
+      }
+      renderGrid(indexes, 2, "four");
+      openMain(indexes[0], true);
+    }
+
+    function savePreset(){
+      if (selectedIndexes.length !== 4){
+        alert("Pick exactly 4 streams before saving your favorite preset.");
+        return;
+      }
+      localStorage.setItem(FAVORITE_KEY, JSON.stringify(selectedIndexes));
+      alert("Favorite 4 streams saved.");
+    }
+
+    function loadPreset(){
+      const raw = localStorage.getItem(FAVORITE_KEY);
+      if (!raw){
+        alert("No saved preset found yet.");
+        return;
+      }
+      try{
+        const parsed = JSON.parse(raw);
+        if (!Array.isArray(parsed) || parsed.length !== 4) throw new Error("Bad preset");
+        selectedIndexes = parsed;
+        syncCheckboxes();
+        renderSelectedList();
+        fourScreenMode(parsed);
+      }catch(err){
+        alert("Saved preset could not be loaded.");
       }
     }
-  }
 
-  // 🔇 Toggle mute
-  if (key.toLowerCase() === "m") {
-    let src = mainPlayer.src;
-
-    if (src.includes("mute=1")) {
-      mainPlayer.src = src.replace("mute=1", "mute=0");
-    } else {
-      mainPlayer.src = src.replace("mute=0", "mute=1");
+    function clearPreset(){
+      localStorage.removeItem(FAVORITE_KEY);
+      selectedIndexes = [];
+      syncCheckboxes();
+      renderSelectedList();
+      showAllFeeds();
     }
-  }
 
-  // 🔲 Fullscreen
-  if (key.toLowerCase() === "f") {
-    if (mainPlayer.requestFullscreen) {
-      mainPlayer.requestFullscreen();
+    function requestFullscreenForMain(){
+      const wrap = document.querySelector(".main-player-wrap");
+      if (wrap.requestFullscreen) wrap.requestFullscreen();
     }
-  }
+    
+    function loadSplit() {
+  mainPlayer.src = "https://jacques1990.github.io/livestream/splitscreen.html";
+}
 
-  // ⬅️➡️ Resize
-  if (key === "ArrowLeft" || key === "ArrowRight") {
+    document.getElementById("showAllBtn").addEventListener("click", showAllFeeds);
+    document.getElementById("fourScreenBtn").addEventListener("click", () => fourScreenMode());
+    document.getElementById("savePresetBtn").addEventListener("click", savePreset);
+    document.getElementById("loadPresetBtn").addEventListener("click", loadPreset);
+    document.getElementById("clearPresetBtn").addEventListener("click", clearPreset);
+    document.getElementById("fullscreenMain").addEventListener("click", requestFullscreenForMain);
 
-    let currentWidth = mainPanel.offsetWidth;
-    let total = window.innerWidth;
+    document.getElementById("muteToggle").addEventListener("click", () => {
+      mainMuted = !mainMuted;
+      const currentUrl = streams[currentMainIndex].url;
+      mainPlayer.src = withParams(currentUrl, mainMuted);
+      mainStatus.textContent = `${streams[currentMainIndex].name} • ${mainMuted ? "Muted" : "Unmuted"}`;
+    });
 
-    let percent = (currentWidth / total) * 100;
+    columnSelect.addEventListener("change", () => {
+      const currentCards = Array.from(document.querySelectorAll(".stream-card .focus-btn")).map(btn => Number(btn.dataset.index));
+      const indexes = currentCards.length ? currentCards : streams.map((_, i) => i);
+      const mode = indexes.length === 4 ? "four" : "all";
+      renderGrid(indexes, Number(columnSelect.value || 2), mode);
+    });
 
-    if (key === "ArrowLeft") percent -= 5;
-    if (key === "ArrowRight") percent += 5;
+    const resizer = document.getElementById("resizer");
+    const sidePanel = document.getElementById("sidePanel");
+    const root = document.documentElement;
+    let dragging = false;
 
-    if (percent > 20 && percent < 80) {
-      mainPanel.style.width = percent + "%";
-      updateLayout();
+    resizer.addEventListener("mousedown", () => {
+      dragging = true;
+      resizer.classList.add("dragging");
+      document.body.style.userSelect = "none";
+    });
+
+    document.addEventListener("mousemove", (e) => {
+      if (!dragging) return;
+      const total = window.innerWidth;
+      const leftWidth = e.clientX;
+      let sidePercent = ((total - leftWidth) / total) * 100;
+      if (sidePercent < 22) sidePercent = 22;
+      if (sidePercent > 65) sidePercent = 65;
+      root.style.setProperty("--sidebarWidth", `${sidePercent}%`);
+
+      if (sidePercent >= 50){
+        root.style.setProperty("--feedHeight", "320px");
+        if (Number(columnSelect.value) < 2) columnSelect.value = "2";
+      } else if (sidePercent >= 40){
+        root.style.setProperty("--feedHeight", "280px");
+      } else {
+        root.style.setProperty("--feedHeight", "240px");
+      }
+    });
+
+    document.addEventListener("mouseup", () => {
+      dragging = false;
+      resizer.classList.remove("dragging");
+      document.body.style.userSelect = "";
+    });
+
+    document.addEventListener("keydown", (e) => {
+      const k = e.key.toLowerCase();
+      if (!isNaN(e.key) && e.key !== "0"){
+        const idx = parseInt(e.key, 10) - 1;
+        if (idx >= 0 && idx < streams.length) openMain(idx, true);
+      }
+      if (k === "f") requestFullscreenForMain();
+      if (k === "m"){
+        document.getElementById("muteToggle").click();
+      }
+      if (k === "a") showAllFeeds();
+      if (k === "p") loadPreset();
+      if (e.key === "ArrowLeft" || e.key === "ArrowRight"){
+        let current = parseFloat(getComputedStyle(root).getPropertyValue("--sidebarWidth"));
+        current += e.key === "ArrowLeft" ? 2 : -2;
+        if (current < 22) current = 22;
+        if (current > 65) current = 65;
+        root.style.setProperty("--sidebarWidth", `${current}%`);
+      }
+    });
+
+    renderSelectedList();
+    showAllFeeds();
+    openMain(0, true);
+
+    const saved = localStorage.getItem(FAVORITE_KEY);
+    if (saved){
+      try{
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length === 4){
+          selectedIndexes = parsed;
+          renderSelectedList();
+          syncCheckboxes();
+        }
+      }catch(e){}
     }
-  }
-
-});
-
-</script>
-
+  </script>
 </body>
 </html>
-
