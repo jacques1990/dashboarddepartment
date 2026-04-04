@@ -174,22 +174,21 @@
     }
 
     .stream-grid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(280px, 1fr));
-      gap:12px;
-      width:max-content;
-      min-width:100%;
-    }
+  display:grid;
+  grid-template-columns: repeat(2, minmax(280px, 1fr));
+  gap:0; /* ✅ REMOVE GAP */
+  width:max-content;
+  min-width:100%;
+}
 
     .stream-card{
-      width:100%;
-      min-width:280px;
-      background:#101010;
-      border:1px solid var(--line);
-      border-radius:12px;
-      overflow:hidden;
-      box-shadow:0 0 0 1px rgba(255,255,255,.02) inset;
-    }
+  width:100%;
+  min-width:280px;
+  background:#101010;
+  border:0;              /* ✅ remove border gap */
+  border-radius:0;       /* ✅ remove rounding gap */
+  overflow:hidden;
+}
 
     .stream-top{
       display:flex;
